@@ -1,0 +1,113 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #0a0a0f;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+#game-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ── HUD ────────────────────────────────────────────────────────────────── */
+
+#hud-health {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  width: 180px;
+  pointer-events: none;
+}
+
+.health-label {
+  color: #4a4060;
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.health-bar-bg {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.health-bar-fill {
+  height: 100%;
+  width: 100%;
+  background-color: #4ade80;
+  border-radius: 3px;
+  transition: width 0.3s ease, background-color 0.5s ease;
+}
+
+#hud-wave {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  color: #4a4060;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+#hud-word {
+  position: fixed;
+  bottom: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 28px;
+  font-weight: bold;
+  color: #c8c4bc;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  min-width: 40px;
+  min-height: 40px;
+  text-align: center;
+  text-shadow: 0 0 12px rgba(200, 196, 188, 0.4);
+  pointer-events: none;
+}
+
+#hud-spellbook {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  pointer-events: none;
+}
+
+.spell-slot {
+  width: 56px;
+  height: 56px;
+  border: 1px solid #2a2040;
+  border-radius: 4px;
+  background: rgba(10, 8, 20, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #3a3050;
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.spell-slot.locked {
+  opacity: 0.5;
+}

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Arcane Lexicon</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <canvas id="game-canvas"></canvas>
+
+    <!-- HUD overlays on top of canvas -->
+    <div id="hud-health">
+      <div class="health-label">HP</div>
+      <div class="health-bar-bg">
+        <div class="health-bar-fill"></div>
+      </div>
+    </div>
+
+    <div id="hud-wave">WAVE 1</div>
+
+    <div id="hud-word"></div>
+
+    <div id="hud-spellbook">
+      <div class="spell-slot locked">····</div>
+      <div class="spell-slot locked">····</div>
+      <div class="spell-slot locked">····</div>
+      <div class="spell-slot locked">····</div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
