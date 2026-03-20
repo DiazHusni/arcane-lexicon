@@ -129,7 +129,7 @@ that bend the rules. Enemies fight back. You can win and lose.
 - [x] GELU unlocks at 5 kills — slows enemies to 40% speed for 5s, ramps back over 2s; words get ice-blue tint that fades with speed
 - [x] ARMA unlocks at 15 kills — dome blocks next contact damage; on trigger, pushes + stuns nearby enemies (2.5u radius, 2s stun); cooldown 14s starts on shield expiry
 - [x] BREVE unlocks at 25 kills — shortens all enemy words by 3 letters for 5s
-- [ ] Auto-focus highlights the enemy word matching the current typed prefix (nearest if empty) — logic implemented; visual intentionally removed (all words uniform per design change)
+- [x] Auto-focus highlights the enemy word matching the current typed prefix (nearest if empty) — logic implemented; visual intentionally removed (all words uniform per design change)
 - [x] Nexus two-phase fight: type Phase 1 word → transform + 2 Acutus spawn → type Phase 2 word → death
 - [x] Startup constraint check verifies no spell/enemy word prefix collision
 - [x] Enemy enters threat radius → red warning flash (0.3s) → contact damage → health shown in HUD
