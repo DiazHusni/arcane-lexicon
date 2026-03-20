@@ -13,6 +13,10 @@ export const ACUTUS_CONFIG: EnemyConfig = {
 
 export function createAcutusMesh(): THREE.Mesh {
   const geo = new THREE.TetrahedronGeometry(ACUTUS_CONFIG.geometryRadius)
-  const mat = new THREE.MeshLambertMaterial({ color: HEX.COLD_BLUE, flatShading: true })
+  const mat = new THREE.MeshLambertMaterial({
+    color:       HEX.COLD_BLUE,
+    emissive:    new THREE.Color(HEX.COLD_BLUE).multiplyScalar(0.15),
+    flatShading: true,
+  })
   return new THREE.Mesh(geo, mat)
 }

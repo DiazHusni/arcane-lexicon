@@ -8,9 +8,19 @@ import {
   findAutoFocusEnemy,
 } from './game/input'
 import { processTick } from './game/loop'
-import { createWorldState, update as worldUpdate, handleInput, startGame, startGameDebug, restartGame, getEnemyMaps } from './game/state'
-import { createPlayer } from './entities/player'
-import { spawnKillVfx } from './renderer/vfx'
+import {
+  createWorldState,
+  update as worldUpdate,
+  handleInput,
+  startGame,
+  startGameDebug,
+  restartGame,
+  getEnemyMaps,
+} from './game/state'
+import { createPlayer, tickPlayer } from './entities/player'
+import { ParticleSystem } from './renderer/particles'
+import { initLightPool, tickLightPool, spawnKillVfx } from './renderer/vfx'
+import { initSfx, startAmbient } from './renderer/sfx'
 import { FIXED_STEP } from './constants/game'
 
 // ── Bootstrap ──────────────────────────────────────────────────────────────
@@ -20,11 +30,33 @@ const labelContainer = document.getElementById('enemy-labels') as HTMLElement
 const renderCtx = createRenderContext(canvas)
 const hud = initHud()
 
-createPlayer(renderCtx.scene)
+const player = createPlayer(renderCtx.scene)
+
+// Particle system — pre-allocated 50K ring buffer, single Points mesh
+const particles = new ParticleSystem(renderCtx.scene)
+
+// Point light pool — 6 pooled PointLights for spell/impact flashes
+initLightPool(renderCtx.scene)
+
+// Audio — lazy-initialized on first user gesture (AudioContext policy)
+const sfxCtx = initSfx()
+let audioStarted = false
+
+function ensureAudioStarted(): void {
+  if (audioStarted) return
+  audioStarted = true
+  sfxCtx.ctx.resume().then(() => startAmbient(sfxCtx))
+}
 
 let inputState = createInputState()
 const world = createWorldState(renderCtx.scene, labelContainer)
-let accumulator = 0
+
+// Inject Phase 3 systems into world
+world.renderCtx = renderCtx
+world.particles = particles
+world.sfx       = sfxCtx
+
+let accumulator   = 0
 let lastTimestamp = 0
 
 // ── Input ─────────────────────────────────────────────────────────────────
@@ -32,16 +64,16 @@ let lastTimestamp = 0
 window.addEventListener('keydown', (e: KeyboardEvent) => {
   if (e.key === 'Backspace') e.preventDefault()
 
+  ensureAudioStarted()
+
   const gd = world.gameData
 
-  // Title screen → start game on Enter / Space (Shift+Enter = debug mode)
   if (gd.phase === 'TITLE') {
     if (e.key === 'Enter' && e.shiftKey) startGameDebug(world)
     else if (e.key === 'Enter' || e.key === ' ') startGame(world)
     return
   }
 
-  // Dead screen → restart on Enter / Space
   if (gd.phase === 'DEAD') {
     if (e.key === 'Enter' || e.key === ' ') restartGame(world)
     return
@@ -54,6 +86,8 @@ window.addEventListener('keydown', (e: KeyboardEvent) => {
   handleInput(world, result)
 })
 
+window.addEventListener('click', () => ensureAudioStarted())
+
 // ── Game update (fixed step) ──────────────────────────────────────────────
 
 function update(dt: number): void {
@@ -62,19 +96,31 @@ function update(dt: number): void {
 
 // ── Render (variable, per rAF) ────────────────────────────────────────────
 
-function render(_alpha: number): void {
+function render(rawDt: number): void {
+  // Camera shake + vignette fade
+  renderCtx.update(rawDt)
+
+  // Player ring animation
+  tickPlayer(player, rawDt)
+
+  // Particle system update
+  particles.update(rawDt)
+
+  // Point light fade
+  tickLightPool(rawDt)
+
+  // Render frame via EffectComposer (bloom + vignette + output)
   renderCtx.composer.render()
 
-  const gd = world.gameData
+  const gd     = world.gameData
   const buffer = getBufferString(inputState)
 
-  // Compute auto-focus
   const { words: enemyWords, positions: enemyPositions } = getEnemyMaps(world)
   const focusedId = findAutoFocusEnemy(buffer, enemyWords, 0, 0, enemyPositions)
 
-  // Consume pending kill VFX events (project 3D → screen, spawn DOM effects)
+  // Consume pending kill VFX events (project 3D position → screen coords)
   for (const vfx of world.pendingKillVfx) {
-    const v = vfx.worldPos.clone().project(renderCtx.camera)
+    const v  = vfx.worldPos.clone().project(renderCtx.camera)
     const sx = Math.round(((v.x + 1) / 2) * window.innerWidth)
     const sy = Math.round(((-v.y + 1) / 2) * window.innerHeight)
     spawnKillVfx(sx, sy, vfx.points)
@@ -101,7 +147,7 @@ function frame(timestamp: number): void {
   const result = processTick(accumulator, rawDt, update, FIXED_STEP)
   accumulator = result.accumulator
 
-  render(result.alpha)
+  render(rawDt)
   requestAnimationFrame(frame)
 }
 

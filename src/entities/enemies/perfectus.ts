@@ -13,6 +13,10 @@ export const PERFECTUS_CONFIG: EnemyConfig = {
 
 export function createPerfectusMesh(): THREE.Mesh {
   const geo = new THREE.OctahedronGeometry(PERFECTUS_CONFIG.geometryRadius)
-  const mat = new THREE.MeshLambertMaterial({ color: HEX.HOT_PINK, flatShading: true })
+  const mat = new THREE.MeshLambertMaterial({
+    color:       HEX.COLD_BLUE,
+    emissive:    new THREE.Color(HEX.COLD_BLUE).multiplyScalar(0.15),
+    flatShading: true,
+  })
   return new THREE.Mesh(geo, mat)
 }

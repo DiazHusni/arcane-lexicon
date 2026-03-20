@@ -205,17 +205,17 @@ something visually striking.
 
 **Deliverables:**
 
-- [ ] Arena floor is a hexagonal plane with beveled edges — grid overlay gone
-- [ ] Player is a glowing rune ring, not a sphere
-- [ ] Enemy color warms from cold blue (early waves) to amber (late waves) as intensity rises
-- [ ] Each of the 6 spells has a distinct particle + light effect
-- [ ] Enemies have a "dying" animation (not instant disappear)
-- [ ] Scene has atmospheric depth (fog, ambient glow, background elements)
-- [ ] Spell casts create brief dynamic point lights
-- [ ] Screen shakes on large hits/explosions
-- [ ] Bloom post-processing active on bright elements
-- [ ] Ambient music that builds with wave intensity
-- [ ] All HUD elements styled to match the dark fantasy theme
+- [x] Arena floor is a hexagonal plane with beveled edges — grid overlay gone
+- [x] Player is a glowing rune ring, not a sphere
+- [x] Enemy color warms from cold blue (early waves) to amber (late waves) as intensity rises
+- [x] Each of the 6 spells has a distinct particle + light effect (FULMEN, GELU, ARMA, BREVE + kill projectile trail + enemy death burst)
+- [x] Enemies have a "dying" animation (expand + spin over 400ms before hiding)
+- [x] Scene has atmospheric depth (FogExp2, player ambient glow, hex floor accent edges)
+- [x] Spell casts create brief dynamic point lights (6-slot pool, color-matched per spell)
+- [x] Screen shakes on large hits/explosions (position-offset only, prefers-reduced-motion aware)
+- [x] Bloom post-processing active on bright elements (UnrealBloomPass, strength driven by wave intensity 0.3→1.2)
+- [x] Ambient music that builds with wave intensity (Web Audio API: ambient hum + per-spell procedural sounds)
+- [x] All HUD elements styled to match the dark fantasy theme (CSS custom props, glow shadows, arcane accent marks)
 - [ ] Cold load to first visual: < 3 seconds
 
 **Done when:**

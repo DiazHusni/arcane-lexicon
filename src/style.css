@@ -1,3 +1,17 @@
+/* ── CSS custom properties ─────────────────────────────────────────────── */
+
+:root {
+  --color-bg:          #080816;
+  --color-teal:        #2DD4BF;
+  --color-amber:       #F59E0B;
+  --color-gold:        #EAB308;
+  --color-soft-white:  #E8E4D8;
+  --color-hud-text:    #C8C4BC;
+  --color-hud-dim:     #5A5660;
+  --color-health-full: #2DD4BF;
+  --color-health-low:  #EC4899;
+}
+
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -8,8 +22,9 @@ html, body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: #080816;
+  background: var(--color-bg);
   font-family: 'JetBrains Mono', 'Courier New', Courier, monospace;
+  color: var(--color-hud-text);
 }
 
 #game-canvas {
@@ -36,39 +51,42 @@ html, body {
 .enemy-label {
   position: absolute;
   transform: translateX(-50%);
-  color: #C8C4BC;
+  color: var(--color-hud-text);
   font-size: 11px;
   font-weight: 400;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   white-space: nowrap;
   pointer-events: none;
   transition: opacity 0.15s ease, font-size 0.1s ease;
-  text-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
+  text-shadow:
+    0 0 6px rgba(200, 196, 188, 0.35),
+    0 0 14px rgba(0, 0, 0, 0.95);
 }
 
 /* ── HUD ────────────────────────────────────────────────────────────────── */
 
 #hud-health {
   position: fixed;
-  top: 20px;
-  left: 20px;
+  top: 22px;
+  left: 22px;
   width: 120px;
   pointer-events: none;
 }
 
 .health-label {
-  color: #5A5660;
-  font-size: 9px;
-  letter-spacing: 0.2em;
+  color: var(--color-hud-dim);
+  font-size: 8px;
+  letter-spacing: 0.25em;
   text-transform: uppercase;
-  margin-bottom: 6px;
+  opacity: 0.6;
+  margin-bottom: 7px;
 }
 
 .health-bar-bg {
   width: 100%;
-  height: 4px;
-  background: rgba(255, 255, 255, 0.06);
+  height: 3px;
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 2px;
   overflow: hidden;
 }
@@ -76,76 +94,101 @@ html, body {
 .health-bar-fill {
   height: 100%;
   width: 100%;
-  background-color: #2DD4BF;
+  background-color: var(--color-health-full);
   border-radius: 2px;
   transition: width 0.2s ease, background-color 0.5s ease;
+  box-shadow: 0 0 6px currentColor;
 }
 
 #hud-wave {
   position: fixed;
-  top: 20px;
-  right: 20px;
-  color: #5A5660;
-  font-size: 11px;
-  letter-spacing: 0.2em;
+  top: 22px;
+  right: 22px;
+  color: var(--color-hud-dim);
+  font-size: 10px;
+  letter-spacing: 0.25em;
   text-transform: uppercase;
   pointer-events: none;
+  opacity: 0.55;
 }
+
+/* ── Typed word display ─────────────────────────────────────────────────── */
 
 #hud-word {
   position: fixed;
   bottom: 90px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 28px;
+  font-size: 1.5rem;
   font-weight: 700;
-  color: #C8C4BC;
+  color: var(--color-hud-text);
   letter-spacing: 0.15em;
   text-transform: uppercase;
   min-width: 40px;
   min-height: 40px;
   text-align: center;
-  text-shadow: 0 0 16px rgba(200, 196, 188, 0.35);
   pointer-events: none;
+  text-shadow:
+    0 0 18px rgba(200, 196, 188, 0.4),
+    0 0 36px rgba(200, 196, 188, 0.12);
 }
+
+/* Arcane accent marks flanking the typed word */
+#hud-word::before,
+#hud-word::after {
+  content: '⌑';
+  position: absolute;
+  bottom: -10px;
+  font-size: 8px;
+  opacity: 0.18;
+  color: var(--color-hud-dim);
+  letter-spacing: 0;
+}
+#hud-word::before { left: 0; }
+#hud-word::after  { right: 0; }
+
+/* ── Spellbook bar ──────────────────────────────────────────────────────── */
 
 #hud-spellbook {
   position: fixed;
-  bottom: 20px;
+  bottom: 22px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 8px;
+  gap: 6px;
   pointer-events: none;
 }
 
 .spell-slot {
-  min-width: 64px;
-  height: 48px;
-  padding: 0 10px;
-  border: 1px solid #1e1c2e;
-  border-radius: 4px;
-  background: rgba(8, 8, 22, 0.85);
+  min-width: 68px;
+  height: 44px;
+  padding: 0 12px;
+  border: 1px solid rgba(30, 28, 46, 0.9);
+  border-radius: 2px;
+  background: rgba(8, 8, 22, 0.92);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 10px;
-  letter-spacing: 0.15em;
+  font-size: 9px;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  transition: color 0.3s ease, border-color 0.3s ease;
+  transition: color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .spell-slot.locked {
-  color: #2a2040;
-  opacity: 0.6;
+  color: #1a1628;
+  opacity: 0.5;
+  border-color: rgba(20, 18, 32, 0.6);
 }
 
 .spell-slot.cooldown {
-  color: #5A5660;
+  color: var(--color-hud-dim);
+  border-color: rgba(90, 86, 96, 0.25);
 }
 
 .spell-slot.ready {
-  color: #C8C4BC;
+  border-color: rgba(90, 86, 96, 0.45);
+  box-shadow: 0 0 10px -3px currentColor, inset 0 0 8px -4px currentColor;
 }
 
 /* ── Screen overlays ────────────────────────────────────────────────────── */
@@ -160,7 +203,7 @@ html, body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 20px;
+  gap: 24px;
   pointer-events: none;
 }
 
@@ -169,45 +212,48 @@ html, body {
 }
 
 .title-text {
-  color: #C8C4BC;
+  color: var(--color-hud-text);
   font-size: 2rem;
   font-weight: 800;
   letter-spacing: 0.3em;
   text-align: center;
+  text-shadow:
+    0 0 30px rgba(232, 228, 216, 0.25),
+    0 0 60px rgba(232, 228, 216, 0.08);
 }
 
 .title-cta {
-  color: #5A5660;
-  font-size: 0.7rem;
-  letter-spacing: 0.2em;
+  color: var(--color-hud-dim);
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
   text-transform: uppercase;
   animation: pulse 1.2s ease-in-out infinite;
 }
 
 .title-hint {
-  color: #3a3448;
-  font-size: 0.65rem;
-  letter-spacing: 0.05em;
-  opacity: 0.6;
+  color: #2c2a38;
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+  opacity: 0.9;
 }
 
 .dead-stats {
-  color: #5A5660;
+  color: var(--color-hud-dim);
   font-size: 0.85rem;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
 }
 
 .dead-cta {
-  color: #C8C4BC;
-  font-size: 0.7rem;
-  letter-spacing: 0.2em;
+  color: var(--color-hud-text);
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
   text-transform: uppercase;
   animation: pulse 1.2s ease-in-out infinite;
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 0.5; }
-  50% { opacity: 1.0; }
+  0%, 100% { opacity: 0.4; }
+  50%       { opacity: 1.0; }
 }
 
 /* ── Kill VFX ───────────────────────────────────────────────────────────── */
@@ -215,12 +261,13 @@ html, body {
 .kill-score {
   position: absolute;
   transform: translateX(-50%);
-  color: #EAB308;
-  font-size: 13px;
+  color: var(--color-gold);
+  font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   pointer-events: none;
   animation: kill-score-float 0.85s ease-out forwards;
+  text-shadow: 0 0 10px var(--color-amber);
 }
 
 .kill-particle {
@@ -228,15 +275,15 @@ html, body {
   width: 3px;
   height: 3px;
   border-radius: 50%;
-  background: #F59E0B;
+  background: var(--color-amber);
   transform: translate(-50%, -50%);
   pointer-events: none;
-  animation: kill-particle-burst 0.45s ease-out forwards;
+  animation: kill-particle-burst 0.4s ease-out forwards;
 }
 
 @keyframes kill-score-float {
   0%   { opacity: 1;   transform: translateX(-50%) translateY(0); }
-  100% { opacity: 0;   transform: translateX(-50%) translateY(-44px); }
+  100% { opacity: 0;   transform: translateX(-50%) translateY(-48px); }
 }
 
 @keyframes kill-particle-burst {

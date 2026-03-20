@@ -83,3 +83,60 @@ export const FULMEN_RADIUS = 999
 
 /** Enemy spawn Y position (just above floor) */
 export const ENEMY_SPAWN_Y = 0.5
+
+// ── Phase 3: Visual Spectacle ─────────────────────────────────────────────
+
+/** Number of pre-allocated point lights in the spell light pool */
+export const POINT_LIGHT_POOL_SIZE = 6
+
+/** Bloom strength at zero intensity (base) */
+export const BLOOM_STRENGTH_BASE = 0.3
+
+/** Bloom strength at full intensity (peak) */
+export const BLOOM_STRENGTH_MAX = 1.2
+
+/** Bloom radius (how far bloom bleeds) */
+export const BLOOM_RADIUS = 0.5
+
+/** Bloom threshold — only pixels brighter than this bloom */
+export const BLOOM_THRESHOLD = 0.85
+
+/** Vignette strength at rest */
+export const VIGNETTE_BASE = 0.3
+
+/** Vignette strength on player hit */
+export const VIGNETTE_HIT = 0.6
+
+/** Duration for vignette to fade back to base after hit (ms) */
+export const VIGNETTE_FADE_MS = 1000
+
+/** Intensity = Math.min(1, (wave - 1) / INTENSITY_WAVE_CAP) */
+export const INTENSITY_WAVE_CAP = 6
+
+/** FogExp2 density */
+export const FOG_DENSITY = 0.02
+
+/** Ambient particle count (always-present drifting particles) */
+export const AMBIENT_PARTICLE_COUNT = 50
+
+/** Enemy death animation duration (ms) — mesh fades/scales before hiding */
+export const ENEMY_DEATH_ANIM_MS = 400
+
+// Camera shake amplitudes and durations per event
+export const SHAKE = {
+  PROJECTILE_IMPACT_BASE:   0.03,
+  PROJECTILE_IMPACT_PER:    0.006,
+  PROJECTILE_IMPACT_MS:     150,
+  FULMEN:                   0.15,
+  FULMEN_MS:                400,
+  ARMA_TRIGGER:             0.06,
+  ARMA_TRIGGER_MS:          200,
+  PLAYER_HIT:               0.08,
+  PLAYER_HIT_MS:            250,
+  NEXUS_PHASE2_DEATH:       0.25,
+  NEXUS_PHASE2_DEATH_MS:    600,
+  NEXUS_TRANSITION:         0.15,
+  NEXUS_TRANSITION_MS:      400,
+  COMBO_BIG:                0.10,
+  COMBO_BIG_MS:             300,
+} as const

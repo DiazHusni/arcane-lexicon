@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import type { Enemy } from '../enemy'
 import type { EnemyType } from '../../types/enemy'
+import { intensityFromWave, setEnemyIntensityColor } from '../enemy'
 import { ACUTUS_CONFIG, createAcutusMesh } from './acutus'
 import { SOLIDUS_CONFIG, createSolidusMesh } from './solidus'
 import { PERFECTUS_CONFIG, createPerfectusMesh } from './perfectus'
@@ -34,7 +35,7 @@ export function spawnEnemy(
 
   const speedScale = Math.min(2.0, 1.0 + wave * 0.05)
 
-  return {
+  const enemy: Enemy = {
     id: nextId++,
     type,
     mesh,
@@ -56,7 +57,13 @@ export function spawnEnemy(
     damageCooldown: 0,
     nexusPhase: 1,
     alive: true,
+    deathTimer: 0,
   }
+
+  // Apply intensity-driven color at spawn
+  setEnemyIntensityColor(enemy, intensityFromWave(wave))
+
+  return enemy
 }
 
 export function despawnEnemy(enemy: Enemy, scene: THREE.Scene): void {

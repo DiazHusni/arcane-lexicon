@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import type { EnemyType } from '../types/enemy'
-import { DAMAGE_WARNING_MS, DAMAGE_COOLDOWN_MS } from '../constants/game'
+import { DAMAGE_WARNING_MS, DAMAGE_COOLDOWN_MS, ENEMY_DEATH_ANIM_MS } from '../constants/game'
+import { HEX } from '../constants/colors'
 
 export interface Enemy {
   id: number
@@ -24,7 +25,32 @@ export interface Enemy {
   damageCooldown: number    // ms until this enemy can damage again
   nexusPhase: number        // Nexus only: 1 or 2
   alive: boolean
+  deathTimer: number        // > 0 = playing death animation; 0 = fully dead
 }
+
+// ── Intensity color system ─────────────────────────────────────────────────
+
+/** Compute intensity (0–1) from wave number. */
+export function intensityFromWave(wave: number): number {
+  return Math.min(1, (wave - 1) / 6)
+}
+
+/** Interpolate enemy color from cold blue → amber based on intensity. */
+export function enemyColorFromIntensity(intensity: number): THREE.Color {
+  const cold = new THREE.Color(HEX.COLD_BLUE)
+  const warm = new THREE.Color(HEX.AMBER)
+  return cold.lerp(warm, intensity)
+}
+
+/** Apply intensity-driven color to an enemy's material. */
+export function setEnemyIntensityColor(enemy: Enemy, intensity: number): void {
+  const col = enemyColorFromIntensity(intensity)
+  const mat = enemy.mesh.material as THREE.MeshLambertMaterial
+  mat.color.copy(col)
+  mat.emissive.copy(col).multiplyScalar(0.15)
+}
+
+// ── Movement ───────────────────────────────────────────────────────────────
 
 const SEEK_WEIGHT       = 1.0
 const SEPARATION_WEIGHT = 0.8
@@ -44,12 +70,10 @@ export function move(
   const dtSec = dt / 1000
   const effectiveSpeed = enemy.speed * enemy.speedMultiplier
 
-  // Seek direction toward player
   const seekDir = new THREE.Vector3()
     .subVectors(playerPos, enemy.position)
     .normalize()
 
-  // Separation from nearby enemies
   const separDir = new THREE.Vector3()
   const sepRadius = enemy.threatRadius * 1.5
   for (const other of allEnemies) {
@@ -65,7 +89,6 @@ export function move(
   }
   if (separDir.lengthSq() > 0) separDir.normalize()
 
-  // Weighted sum → steering
   const steering = new THREE.Vector3()
     .addScaledVector(seekDir, SEEK_WEIGHT)
     .addScaledVector(separDir, SEPARATION_WEIGHT)
@@ -77,18 +100,16 @@ export function move(
   enemy.prevPosition.copy(enemy.position)
   enemy.position.add(steering)
   enemy.mesh.position.copy(enemy.position)
-  enemy.mesh.rotation.y += 0.01  // slow rotation while alive
+  enemy.mesh.rotation.y += 0.01
 }
+
+// ── Proximity damage ───────────────────────────────────────────────────────
 
 export interface DamageEvent {
   damage: number
   enemyId: number
 }
 
-/**
- * Tick proximity damage logic each fixed step.
- * Returns a DamageEvent if damage should be applied this tick, otherwise null.
- */
 export function tickProximityDamage(
   enemy: Enemy,
   playerPos: THREE.Vector3,
@@ -118,6 +139,8 @@ export function tickProximityDamage(
   return null
 }
 
+// ── State changes ──────────────────────────────────────────────────────────
+
 export function markForDeath(enemy: Enemy): void {
   enemy.markedForDeath = true
   if (enemy.labelEl) enemy.labelEl.style.opacity = '0.2'
@@ -131,7 +154,6 @@ export function applySpeedMultiplier(enemy: Enemy, multiplier: number): void {
   enemy.speedMultiplier = multiplier
 }
 
-/** Apply BREVE shortening — updates displayWord and billboard text. */
 export function applyShorten(enemy: Enemy, letters: number): void {
   const keepLen = Math.max(1, enemy.word.length - letters)
   enemy.displayWord = enemy.word.slice(0, keepLen)
@@ -141,15 +163,54 @@ export function applyShorten(enemy: Enemy, letters: number): void {
   }
 }
 
-/** Restore the full word after BREVE expires. */
 export function restoreWord(enemy: Enemy): void {
   enemy.displayWord = enemy.word
   if (enemy.labelEl) enemy.labelEl.textContent = enemy.word
 }
 
-/** Remove the enemy from view. Call when death animation is complete. */
+// ── Death animation ────────────────────────────────────────────────────────
+
+/**
+ * Begin death animation — sets alive=false (stops movement/damage)
+ * but keeps mesh visible for ENEMY_DEATH_ANIM_MS.
+ */
+export function startDeath(enemy: Enemy): void {
+  enemy.alive      = false
+  enemy.deathTimer = ENEMY_DEATH_ANIM_MS
+  if (enemy.labelEl) enemy.labelEl.style.display = 'none'
+}
+
+/**
+ * Tick the death animation each frame.
+ * Returns true when the animation is complete (caller should call die()).
+ */
+export function tickDeathAnim(enemy: Enemy, dt: number): boolean {
+  if (enemy.deathTimer <= 0) return true
+
+  enemy.deathTimer -= dt
+  if (enemy.deathTimer <= 0) {
+    die(enemy)
+    return true
+  }
+
+  // Shattering effect: expand outward then collapse
+  const lifeRatio = enemy.deathTimer / ENEMY_DEATH_ANIM_MS // 1→0
+  const expand = Math.sin(lifeRatio * Math.PI) * 0.5       // peak mid-animation
+  const scale  = lifeRatio * (1 + expand)
+  enemy.mesh.scale.setScalar(Math.max(0, scale))
+
+  // Spin faster while dying
+  enemy.mesh.rotation.y += dt * 0.008
+  enemy.mesh.rotation.x += dt * 0.005
+
+  return false
+}
+
+/** Hide the enemy completely — call after death animation completes. */
 export function die(enemy: Enemy): void {
-  enemy.alive = false
+  enemy.alive      = false
+  enemy.deathTimer = 0
   enemy.mesh.visible = false
+  enemy.mesh.scale.setScalar(1) // reset for potential pool reuse
   if (enemy.labelEl) enemy.labelEl.style.display = 'none'
 }
