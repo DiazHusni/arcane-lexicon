@@ -157,7 +157,11 @@ function spawnWave(world: WorldState): void {
 
   // Apply BREVE if currently active
   if (world.gameData.breveRemaining > 0) {
-    for (const e of world.enemies) applyShorten(e, BREVE_SHORTEN_LETTERS)
+    for (const e of world.enemies) {
+      unregisterEnemy(e.id, e.word)
+      applyShorten(e, BREVE_SHORTEN_LETTERS)
+      registerEnemy(e.id, e.displayWord)
+    }
   }
   // Apply GELU if currently active
   if (world.gameData.geluRemaining > 0) {
@@ -211,7 +215,7 @@ function handleEnemyKill(world: WorldState, enemyId: number): void {
   }
 
   markForDeath(enemy)
-  unregisterEnemy(enemy.id, enemy.word)
+  unregisterEnemy(enemy.id, enemy.displayWord)
 
   // Launch projectile
   if (world.scene) {
@@ -222,7 +226,7 @@ function handleEnemyKill(world: WorldState, enemyId: number): void {
 
 function transitionNexusPhase2(world: WorldState, nexus: Enemy): void {
   nexus.nexusPhase = 2
-  unregisterEnemy(nexus.id, nexus.word)
+  unregisterEnemy(nexus.id, nexus.displayWord)
 
   const usedNow = new Set([...world.waveUsedWords])
   const phase2Word = assignNexusPhase2Word(nexus.word, usedNow)
@@ -273,7 +277,13 @@ function handleSpellCast(world: WorldState, spellWord: string): void {
 
   if (castResult.breveActivated) {
     world.gameData = { ...world.gameData, breveRemaining: BREVE_DURATION_MS }
-    for (const e of world.enemies) if (e.alive) applyShorten(e, BREVE_SHORTEN_LETTERS)
+    for (const e of world.enemies) {
+      if (e.alive) {
+        unregisterEnemy(e.id, e.word)
+        applyShorten(e, BREVE_SHORTEN_LETTERS)
+        registerEnemy(e.id, e.displayWord)
+      }
+    }
   }
 
   if (castResult.aoeRadius !== null) {
@@ -286,7 +296,7 @@ function handleSpellCast(world: WorldState, spellWord: string): void {
       .slice(0, maxTargets)
     for (const e of candidates) {
       markForDeath(e)
-      unregisterEnemy(e.id, e.word)
+      unregisterEnemy(e.id, e.displayWord)
       if (world.scene) {
         acquireProjectile(world.projectilePool, playerPos, e, e.word.length)
       }
@@ -341,7 +351,13 @@ function tickPlaying(world: WorldState, dt: number): void {
     const next = tickBreveEffect(world.gameData.breveRemaining, dt)
     world.gameData = { ...world.gameData, breveRemaining: next ?? 0 }
     if (next === null) {
-      for (const e of world.enemies) if (e.alive) restoreWord(e)
+      for (const e of world.enemies) {
+        if (e.alive) {
+          unregisterEnemy(e.id, e.displayWord)
+          restoreWord(e)
+          registerEnemy(e.id, e.word)
+        }
+      }
     }
   }
 
@@ -450,7 +466,7 @@ function killEnemy(world: WorldState, enemy: Enemy): void {
   if (!enemy.alive) return
 
   die(enemy)
-  unregisterEnemy(enemy.id, enemy.word)
+  unregisterEnemy(enemy.id, enemy.displayWord)
 
   const points = Math.floor(enemy.tierPoints * world.gameData.comboMultiplier)
   const newCombo = Math.min(COMBO_MAX, world.gameData.comboMultiplier + COMBO_STEP)
