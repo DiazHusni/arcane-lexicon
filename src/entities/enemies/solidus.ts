@@ -4,7 +4,7 @@ import * as THREE from 'three'
 
 export const SOLIDUS_CONFIG: EnemyConfig = {
   type: 'solidus',
-  baseSpeed: 2.0,
+  baseSpeed: 0.6,
   health: 1,
   threatRadius: 0.95,
   tierPoints: 20,

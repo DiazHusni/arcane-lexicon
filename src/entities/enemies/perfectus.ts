@@ -4,7 +4,7 @@ import * as THREE from 'three'
 
 export const PERFECTUS_CONFIG: EnemyConfig = {
   type: 'perfectus',
-  baseSpeed: 1.2,
+  baseSpeed: 0.36,
   health: 1,
   threatRadius: 1.1,
   tierPoints: 30,

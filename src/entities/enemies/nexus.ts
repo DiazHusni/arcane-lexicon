@@ -4,7 +4,7 @@ import * as THREE from 'three'
 
 export const NEXUS_CONFIG: EnemyConfig = {
   type: 'nexus',
-  baseSpeed: 0.7,
+  baseSpeed: 0.21,
   health: 2,           // survives Phase 1 hit; dies on Phase 2
   threatRadius: 1.5,
   tierPoints: 100,

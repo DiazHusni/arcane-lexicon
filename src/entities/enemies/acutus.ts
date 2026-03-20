@@ -4,7 +4,7 @@ import * as THREE from 'three'
 
 export const ACUTUS_CONFIG: EnemyConfig = {
   type: 'acutus',
-  baseSpeed: 3.0,
+  baseSpeed: 0.9,
   health: 1,
   threatRadius: 0.8,
   tierPoints: 10,
