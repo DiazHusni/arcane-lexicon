@@ -125,7 +125,7 @@ that bend the rules. Enemies fight back. You can win and lose.
 - [ ] Enemy is marked for death on word completion: freezes in place, word dims to 20% opacity
 - [ ] Projectile impacts enemy → geometry shatters, particle burst, score delta floats up
 - [ ] Projectile size visibly larger for longer words (3-letter dart vs 12-letter fireball)
-- [ ] FULMEN available from start — casting it clears nearby enemies with lightning
+- [ ] FULMEN available from start — casting it kills the 3 nearest enemies with lightning
 - [ ] GELU unlocks at 5 kills — slows enemies to 40% speed for 5s, ramps back over 2s; words get ice-blue tint that fades with speed
 - [ ] ARMA unlocks at 15 kills — dome blocks next contact damage; on trigger, pushes + stuns nearby enemies (2.5u radius, 2s stun); cooldown 14s starts on shield expiry
 - [ ] BREVE unlocks at 25 kills — shortens all enemy words by 3 letters for 5s

@@ -71,7 +71,8 @@ export interface CastResult {
   shieldActivated: boolean
   geluActivated: boolean
   breveActivated: boolean
-  aoeRadius: number | null  // non-null for FULMEN
+  aoeRadius: number | null      // non-null for FULMEN
+  aoeMaxTargets: number | null  // non-null for FULMEN
 }
 
 /**
@@ -81,16 +82,17 @@ export interface CastResult {
 export function castSpell(spells: SpellState[], word: string): CastResult {
   const def = getSpellDefinition(word)
   if (!def) {
-    return { spells, shieldActivated: false, geluActivated: false, breveActivated: false, aoeRadius: null }
+    return { spells, shieldActivated: false, geluActivated: false, breveActivated: false, aoeRadius: null, aoeMaxTargets: null }
   }
 
   const shieldActivated = def.effect.type === 'shield'
   const geluActivated   = def.effect.type === 'freeze'
   const breveActivated  = def.effect.type === 'shorten'
   const aoeRadius       = def.effect.type === 'aoe_clear' ? def.effect.radius : null
+  const aoeMaxTargets   = def.effect.type === 'aoe_clear' ? def.effect.maxTargets : null
 
   // ARMA: cooldown deferred to shield expiry — do NOT start it now
   const updatedSpells = shieldActivated ? spells : startCooldown(spells, word)
 
-  return { spells: updatedSpells, shieldActivated, geluActivated, breveActivated, aoeRadius }
+  return { spells: updatedSpells, shieldActivated, geluActivated, breveActivated, aoeRadius, aoeMaxTargets }
 }

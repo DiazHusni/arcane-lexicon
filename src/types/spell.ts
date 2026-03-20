@@ -1,7 +1,7 @@
 export type SpellTarget = 'nearest' | 'all' | 'player' | 'none'
 
 export type SpellEffect =
-  | { type: 'aoe_clear'; radius: number }
+  | { type: 'aoe_clear'; radius: number; maxTargets: number }
   | { type: 'freeze'; durationMs: number }
   | { type: 'shorten'; letters: number; durationMs: number }
   | { type: 'shield'; blocksNextHit: true; expiryMs: number }

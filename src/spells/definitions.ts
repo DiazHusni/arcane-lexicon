@@ -12,7 +12,7 @@ export const SPELL_DEFINITIONS: SpellDefinition[] = [
     word: 'fulmen',
     cooldownMs: 5000,
     target: 'all',
-    effect: { type: 'aoe_clear', radius: FULMEN_RADIUS },
+    effect: { type: 'aoe_clear', radius: FULMEN_RADIUS, maxTargets: 3 },
     vfxKey: 'fulmen',
     sfxKey: 'fulmen',
     unlockAtKills: 0,

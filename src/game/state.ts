@@ -266,16 +266,18 @@ function handleSpellCast(world: WorldState, spellWord: string): void {
   }
 
   if (castResult.aoeRadius !== null) {
-    // FULMEN — kill all enemies in radius
+    // FULMEN — kill up to maxTargets nearest enemies within radius
     const playerPos = new THREE.Vector3(0, 0.5, 0)
-    for (const e of world.enemies) {
-      if (!e.alive || e.markedForDeath) continue
-      if (e.position.distanceTo(playerPos) <= castResult.aoeRadius) {
-        markForDeath(e)
-        unregisterEnemy(e.id, e.word)
-        if (world.scene) {
-          acquireProjectile(world.projectilePool, playerPos, e, e.word.length)
-        }
+    const maxTargets = castResult.aoeMaxTargets ?? Infinity
+    const candidates = world.enemies
+      .filter(e => e.alive && !e.markedForDeath && e.position.distanceTo(playerPos) <= castResult.aoeRadius!)
+      .sort((a, b) => a.position.distanceTo(playerPos) - b.position.distanceTo(playerPos))
+      .slice(0, maxTargets)
+    for (const e of candidates) {
+      markForDeath(e)
+      unregisterEnemy(e.id, e.word)
+      if (world.scene) {
+        acquireProjectile(world.projectilePool, playerPos, e, e.word.length)
       }
     }
   }

@@ -152,7 +152,7 @@ enemy words — none kill enemies directly.
 
 | Word      | Latin meaning | Effect                                                        | Cooldown      | Unlock   | Letters |
 |-----------|---------------|---------------------------------------------------------------|---------------|----------|---------|
-| `FULMEN`  | thunderbolt   | Lightning arc — clears all enemies in a radius                | 5s            | Start    | 6       |
+| `FULMEN`  | thunderbolt   | Lightning arc — kills the 3 nearest enemies                   | 5s            | Start    | 6       |
 | `GELU`    | frost/cold    | Slow all enemies to 40% speed for 7s (2s ramp-back); words ice over | 4s     | 5 kills  | 4       |
 | `ARMA`    | armor/shield  | Dome blocks next contact damage; on trigger, pushes + stuns all enemies within 2.5u for 2s | 14s after shield expiry | 15 kills | 4 |
 | `BREVE`   | brief/short   | Shorten all enemy words by 3 letters for 5s                   | 6s            | 25 kills | 5       |
@@ -499,7 +499,7 @@ Each spell must be visually distinct at a glance. The visual signature IS the sp
 
 | Spell | Color | Shape | Motion | Sound signature |
 |-------|-------|-------|--------|-----------------|
-| `FULMEN` | Gold + white flash | Arc chains from player → all enemies in radius | Near-instant outward chains | Sharp crack + chain buzz |
+| `FULMEN` | Gold + white flash | Arc chains from player → 3 nearest enemies | Near-instant outward chains | Sharp crack + chain buzz |
 | `GELU` | Teal + ice-white | Expanding ring from player; enemy words frost over | Radially outward 0.5s; words + enemy geometry get blue tint, fades with speed during 2s ramp-back | High crystal ping, reverb tail |
 | `ARMA` | Soft white + blue edge | Hemisphere dome over player; shatters on hit absorbed or 15s expiry | Rises 0.3s, holds until consumed | Bell strike (resonant) |
 | `BREVE` | Cold blue flash | Letters strip off right side of each enemy word | Near-instant, left-to-right sweep across HUD words | Rapid staccato clip |
