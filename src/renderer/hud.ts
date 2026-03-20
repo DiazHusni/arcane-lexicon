@@ -8,6 +8,10 @@ export interface HudElements {
   healthBarFill: HTMLElement
   waveEl: HTMLElement
   spellSlots: HTMLElement[]
+  screenTitle: HTMLElement
+  screenWave: HTMLElement
+  screenDead: HTMLElement
+  deadStats: HTMLElement
 }
 
 export interface HudSyncData {
@@ -25,21 +29,40 @@ export function initHud(): HudElements {
   const healthEl = document.getElementById('hud-health')
   const waveEl = document.getElementById('hud-wave')
   const spellbookEl = document.getElementById('hud-spellbook')
+  const screenTitle = document.getElementById('screen-title')
+  const screenWave = document.getElementById('screen-wave')
+  const screenDead = document.getElementById('screen-dead')
 
-  if (!wordEl || !healthEl || !waveEl || !spellbookEl) {
+  if (!wordEl || !healthEl || !waveEl || !spellbookEl || !screenTitle || !screenWave || !screenDead) {
     throw new Error('HUD elements not found in DOM')
   }
 
   const healthBarFill = healthEl.querySelector<HTMLElement>('.health-bar-fill')
   if (!healthBarFill) throw new Error('.health-bar-fill not found')
 
+  const deadStats = screenDead.querySelector<HTMLElement>('.dead-stats')
+  if (!deadStats) throw new Error('.dead-stats not found')
+
   const spellSlots = Array.from(spellbookEl.querySelectorAll<HTMLElement>('.spell-slot'))
 
-  return { wordEl, healthBarFill, waveEl, spellSlots }
+  return { wordEl, healthBarFill, waveEl, spellSlots, screenTitle, screenWave, screenDead, deadStats }
 }
 
 export function syncHud(hud: HudElements, data: HudSyncData): void {
   const { wordBuffer, gameData, enemies, camera, canvasWidth, canvasHeight, focusedEnemyId } = data
+
+  // Screen overlays — show/hide based on phase
+  const isTitle = gameData.phase === 'TITLE'
+  const isDead = gameData.phase === 'DEAD'
+  const isWaveClear = gameData.phase === 'WAVE_CLEAR'
+
+  hud.screenTitle.classList.toggle('hidden', !isTitle)
+  hud.screenDead.classList.toggle('hidden', !isDead)
+  hud.screenWave.classList.toggle('hidden', !isWaveClear)
+
+  if (isDead) {
+    hud.deadStats.textContent = `wave ${gameData.wave}  ·  score ${gameData.score}  ·  kills ${gameData.kills}`
+  }
 
   // Typed word
   hud.wordEl.textContent = wordBuffer.toUpperCase()
