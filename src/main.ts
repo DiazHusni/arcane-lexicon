@@ -8,7 +8,7 @@ import {
   findAutoFocusEnemy,
 } from './game/input'
 import { processTick } from './game/loop'
-import { createWorldState, update as worldUpdate, handleInput, startGame, restartGame, getEnemyMaps } from './game/state'
+import { createWorldState, update as worldUpdate, handleInput, startGame, startGameDebug, restartGame, getEnemyMaps } from './game/state'
 import { createPlayer } from './entities/player'
 import { FIXED_STEP } from './constants/game'
 
@@ -33,9 +33,10 @@ window.addEventListener('keydown', (e: KeyboardEvent) => {
 
   const gd = world.gameData
 
-  // Title screen → start game on Enter / Space
+  // Title screen → start game on Enter / Space (Shift+Enter = debug mode)
   if (gd.phase === 'TITLE') {
-    if (e.key === 'Enter' || e.key === ' ') startGame(world)
+    if (e.key === 'Enter' && e.shiftKey) startGameDebug(world)
+    else if (e.key === 'Enter' || e.key === ' ') startGame(world)
     return
   }
 

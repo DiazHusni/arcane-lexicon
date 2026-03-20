@@ -114,6 +114,17 @@ export function startGame(world: WorldState): void {
   spawnWave(world)
 }
 
+/** Debug mode: same as startGame but all spells start unlocked. */
+export function startGameDebug(world: WorldState): void {
+  world.gameData = {
+    ...world.gameData,
+    phase: 'PLAYING',
+    wave: 1,
+    spells: world.gameData.spells.map(s => ({ ...s, unlocked: true })),
+  }
+  spawnWave(world)
+}
+
 /** Restart: full scene cleanup then Wave 1. */
 export function restartGame(world: WorldState): void {
   cleanupScene(world)

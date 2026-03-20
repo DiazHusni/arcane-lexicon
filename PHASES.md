@@ -145,6 +145,11 @@ that bend the rules. Enemies fight back. You can win and lose.
   - `game/state.ts` — all state transitions including restart cleanup
   - `game/wave.ts` — spawn counts, difficulty scaling
 
+- **Debug mode** (`main.ts`)
+  - Activated by pressing `Shift+Enter` on the title screen instead of `Enter`/`Space`
+  - All 4 spells start unlocked regardless of kill count
+  - No other changes to game rules (enemies still spawn, damage still applies)
+
 **Done when:**
 You can play a full session: kill enemies by typing their words, unlock spells mid-run,
 use spells tactically, die, see your score, restart. It's rough, but it's a game.
