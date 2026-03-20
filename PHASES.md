@@ -11,11 +11,12 @@ Phases build on each other — Phase N assumes Phase N-1 is complete and stable.
 technical foundation is solid, tested, and deployable.
 
 **What you're building:**
+
 - Git repo initialization (`git init`, `.gitignore` for `node_modules/dist/`)
 - Project scaffold (Vite + TypeScript)
 - WebGL 3D scene via Three.js with EffectComposer pipeline from day 1
   (no post-processing effects active in Phase 1, but pipeline is in place so
-   Phase 3 adds bloom/vignette without touching the render core)
+  Phase 3 adds bloom/vignette without touching the render core)
 - A simple arena: floor plane + boundary walls
 - Camera positioned above the arena (top-down / isometric)
 - A player entity (placeholder geometry) in the center
@@ -36,11 +37,12 @@ technical foundation is solid, tested, and deployable.
 - Static deploy to GitHub Pages or Netlify (CI/CD or manual)
 
 **Deliverables:**
+
 - [x] `index.html` loads the game with no errors
 - [x] 3D arena visible from above with a player marker
 - [x] Type on keyboard → current word appears in HUD
 - [x] Backspace clears the current word
-- [ ] 60fps on a mid-range laptop
+- [x] 60fps on a mid-range laptop
 - [ ] Deployed to a public URL
 - [x] Unit tests passing (`vitest run`) with 80%+ coverage of:
   - `game/input.ts` — word buffer: append char, backspace, clear on match, non-alpha ignored — 15 tests, 100% coverage
@@ -59,6 +61,7 @@ in the HUD. Nothing "happens" yet — but the engine works.
 that bend the rules. Enemies fight back. You can win and lose.
 
 **What you're building:**
+
 - **Enemy word assignment system** (`entities/enemies/wordAssignment.ts`)
   - English word pool partitioned by enemy tier (see DESIGN.md → Enemy Types)
   - Each spawned enemy draws a word from its tier pool; words are unique per wave
@@ -92,7 +95,7 @@ that bend the rules. Enemies fight back. You can win and lose.
   - Movement = seek (toward player) + separation (away from nearby enemies)
   - `move()` is a no-op while `stunTimer > 0` (stunned by ARMA)
   - Separation radius = 1.5x enemy collision radius to prevent stacking
-  - Simple weighted sum: velocity = seekWeight * seekDir + separationWeight * separDir
+  - Simple weighted sum: velocity = seekWeight _ seekDir + separationWeight _ separDir
   - No pathfinding needed (arena is open, no obstacles)
   - Contact damage: if `distance(player, enemy) <= threatRadius` → 0.3s red warning flash → damage tick (0.5s per-enemy invincibility window prevents spam)
 - **Player health system**
@@ -116,6 +119,7 @@ that bend the rules. Enemies fight back. You can win and lose.
   - Score displayed on death screen
 
 **Deliverables:**
+
 - [ ] Each enemy spawns with an English word displayed above it
 - [ ] Type an enemy's exact word → amber fireball launches toward that enemy
 - [ ] Enemy is marked for death on word completion: freezes in place, word dims to 20% opacity
@@ -154,6 +158,7 @@ use spells tactically, die, see your score, restart. It's rough, but it's a game
 something visually striking.
 
 **What you're building:**
+
 - Particle system — ring buffer, 50K pre-allocated particles, zero runtime alloc
   - Per-spell parameters: see ARCHITECTURE.md → Particle System Specification
 - Per-spell 3D visual effects — each spell looks and feels distinct
@@ -179,6 +184,7 @@ something visually striking.
 - HUD polish: all elements styled per DESIGN.md typography + color tables
 
 **Deliverables:**
+
 - [ ] Each of the 6 spells has a distinct particle + light effect
 - [ ] Enemies have a "dying" animation (not instant disappear)
 - [ ] Scene has atmospheric depth (fog, ambient glow, background elements)
@@ -201,6 +207,7 @@ anything about how it was built.
 variety, multiple arenas, and enough content that a session feels substantial.
 
 **What you're building:**
+
 - Full spellbook: 12+ spells with distinct mechanics
 - Advanced spells with more complex effects (AoE, DoT, multi-hit, terrain)
 - 4+ enemy types with different behaviors (charger, ranged attacker, splitter,
@@ -218,6 +225,7 @@ variety, multiple arenas, and enough content that a session feels substantial.
 - Optional: expand word pools per tier with more thematically resonant words
 
 **Deliverables:**
+
 - [ ] 12 spells, each with distinct effect and visual
 - [ ] 4 enemy types with meaningfully different behavior
 - [ ] 3 arena environments
@@ -238,6 +246,7 @@ engagement does.
 world into being.
 
 **What you're building:**
+
 - Chapter structure: 3-5 chapters, each with unique setting + story beat
 - Intro sequence: narrator sets the world, introduces the player's role
 - Between-chapter screens: brief lore text, story progression
@@ -250,6 +259,7 @@ world into being.
 - Optional: unlockable lore fragments (found in enemy drops or arenas)
 
 **Deliverables:**
+
 - [ ] Chapter 1 fully playable start-to-finish with intro + boss
 - [ ] At least 3 chapters total
 - [ ] Boss fight with 2+ phases and unique attack patterns
@@ -257,7 +267,7 @@ world into being.
 - [ ] Credits screen
 - [ ] All spells/enemies have lore-consistent names and descriptions
 - [ ] A first-time player understands who they are and what they're doing
-    within the first 60 seconds
+      within the first 60 seconds
 
 **Done when:**
 Someone can sit down with no context, play start to finish, and feel like they
@@ -268,7 +278,7 @@ experienced a complete story — not just a tech demo with a wrapper.
 ## Phase Overview Table
 
 | Phase | Name                  | Playable? | Shareable? | Est. Files |
-|-------|-----------------------|-----------|------------|------------|
+| ----- | --------------------- | --------- | ---------- | ---------- |
 | 1     | 3D Engine Foundation  | No        | No         | ~10        |
 | 2     | Spell System & Combat | Yes       | Barely     | ~20        |
 | 3     | Visual Spectacle      | Yes       | Yes        | ~30        |
@@ -280,6 +290,7 @@ experienced a complete story — not just a tech demo with a wrapper.
 ## Performance Architecture
 
 ### Object Pooling (Phase 2 onwards)
+
 Three.js mesh objects must be pooled rather than created/destroyed per enemy or spell.
 
 ```
@@ -295,14 +306,17 @@ M = max simultaneous projectiles (e.g. 10)
 Never call `geometry.dispose()` / `material.dispose()` per frame — only at game shutdown.
 
 ### Particle Ring Buffer (Phase 3)
+
 Particle system uses a pre-allocated Float32Array ring buffer (50K particles max).
 Dead particles are overwritten, not garbage-collected. Zero runtime allocation.
 
 ### Bloom at Half Resolution (Phase 3)
+
 Post-processing bloom renders to a half-resolution render target (4x bandwidth savings).
 Visually identical at any reasonable bloom radius.
 
 ### Web Audio Scheduling (Phase 3)
+
 Kill sounds scheduled at `audioCtx.currentTime + 0.01` to avoid latency artifacts.
 Never call `AudioBufferSourceNode.start()` with no argument on low-latency systems.
 

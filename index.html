@@ -4,10 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Arcane Lexicon</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/src/style.css" />
   </head>
   <body>
-    <canvas id="game-canvas"></canvas>
+    <canvas id="game-canvas" aria-label="Arcane Lexicon — a 3D typing spell game"></canvas>
+
+    <!-- Enemy word billboard container — positioned absolutely over canvas -->
+    <div id="enemy-labels"></div>
 
     <!-- HUD overlays on top of canvas -->
     <div id="hud-health">
@@ -26,6 +32,22 @@
       <div class="spell-slot locked">····</div>
       <div class="spell-slot locked">····</div>
       <div class="spell-slot locked">····</div>
+    </div>
+
+    <!-- Title screen overlay -->
+    <div id="screen-title" class="screen-overlay">
+      <div class="title-text">A R C A N E &nbsp; L E X I C O N</div>
+      <div class="title-cta">press enter to begin</div>
+      <div class="title-hint">type enemy words to kill &nbsp;·&nbsp; latin spells bend the rules</div>
+    </div>
+
+    <!-- Wave clear overlay -->
+    <div id="screen-wave" class="screen-overlay hidden"></div>
+
+    <!-- Death screen overlay -->
+    <div id="screen-dead" class="screen-overlay hidden">
+      <div class="dead-stats"></div>
+      <div class="dead-cta">press enter to restart</div>
     </div>
 
     <script type="module" src="/src/main.ts"></script>

@@ -8,8 +8,8 @@ html, body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: #0a0a0f;
-  font-family: 'Courier New', Courier, monospace;
+  background: #080816;
+  font-family: 'JetBrains Mono', 'Courier New', Courier, monospace;
 }
 
 #game-canvas {
@@ -21,47 +21,73 @@ html, body {
   display: block;
 }
 
+/* ── Enemy word billboards ──────────────────────────────────────────────── */
+
+#enemy-labels {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.enemy-label {
+  position: absolute;
+  transform: translateX(-50%);
+  color: #C8C4BC;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+  transition: opacity 0.15s ease, font-size 0.1s ease;
+  text-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
+}
+
 /* ── HUD ────────────────────────────────────────────────────────────────── */
 
 #hud-health {
   position: fixed;
   top: 20px;
   left: 20px;
-  width: 180px;
+  width: 120px;
   pointer-events: none;
 }
 
 .health-label {
-  color: #4a4060;
-  font-size: 10px;
-  letter-spacing: 3px;
+  color: #5A5660;
+  font-size: 9px;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  margin-bottom: 5px;
+  margin-bottom: 6px;
 }
 
 .health-bar-bg {
   width: 100%;
-  height: 6px;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 3px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 2px;
   overflow: hidden;
 }
 
 .health-bar-fill {
   height: 100%;
   width: 100%;
-  background-color: #4ade80;
-  border-radius: 3px;
-  transition: width 0.3s ease, background-color 0.5s ease;
+  background-color: #2DD4BF;
+  border-radius: 2px;
+  transition: width 0.2s ease, background-color 0.5s ease;
 }
 
 #hud-wave {
   position: fixed;
   top: 20px;
   right: 20px;
-  color: #4a4060;
+  color: #5A5660;
   font-size: 11px;
-  letter-spacing: 3px;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   pointer-events: none;
 }
@@ -72,14 +98,14 @@ html, body {
   left: 50%;
   transform: translateX(-50%);
   font-size: 28px;
-  font-weight: bold;
-  color: #c8c4bc;
-  letter-spacing: 5px;
+  font-weight: 700;
+  color: #C8C4BC;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
   min-width: 40px;
   min-height: 40px;
   text-align: center;
-  text-shadow: 0 0 12px rgba(200, 196, 188, 0.4);
+  text-shadow: 0 0 16px rgba(200, 196, 188, 0.35);
   pointer-events: none;
 }
 
@@ -89,25 +115,97 @@ html, body {
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 6px;
+  gap: 8px;
   pointer-events: none;
 }
 
 .spell-slot {
-  width: 56px;
-  height: 56px;
-  border: 1px solid #2a2040;
+  min-width: 64px;
+  height: 48px;
+  padding: 0 10px;
+  border: 1px solid #1e1c2e;
   border-radius: 4px;
-  background: rgba(10, 8, 20, 0.75);
+  background: rgba(8, 8, 22, 0.85);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #3a3050;
   font-size: 10px;
-  letter-spacing: 1px;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
+  transition: color 0.3s ease, border-color 0.3s ease;
 }
 
 .spell-slot.locked {
-  opacity: 0.5;
+  color: #2a2040;
+  opacity: 0.6;
+}
+
+.spell-slot.cooldown {
+  color: #5A5660;
+}
+
+.spell-slot.ready {
+  color: #C8C4BC;
+}
+
+/* ── Screen overlays ────────────────────────────────────────────────────── */
+
+.screen-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  pointer-events: none;
+}
+
+.screen-overlay.hidden {
+  display: none;
+}
+
+.title-text {
+  color: #C8C4BC;
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: 0.3em;
+  text-align: center;
+}
+
+.title-cta {
+  color: #5A5660;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+.title-hint {
+  color: #3a3448;
+  font-size: 0.65rem;
+  letter-spacing: 0.05em;
+  opacity: 0.6;
+}
+
+.dead-stats {
+  color: #5A5660;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+}
+
+.dead-cta {
+  color: #C8C4BC;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1.0; }
 }
