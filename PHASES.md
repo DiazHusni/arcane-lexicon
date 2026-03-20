@@ -123,7 +123,7 @@ that bend the rules. Enemies fight back. You can win and lose.
 - [x] Each enemy spawns with an English word displayed above it
 - [x] Type an enemy's exact word → amber fireball launches toward that enemy
 - [x] Enemy is marked for death on word completion: keeps moving, word dims to 20% opacity
-- [ ] Projectile impacts enemy → geometry shatters, particle burst, score delta floats up
+- [x] Projectile impacts enemy → geometry shatters, particle burst, score delta floats up
 - [x] Projectile size visibly larger for longer words (3-letter dart vs 12-letter fireball)
 - [x] FULMEN available from start — casting it kills the 3 nearest enemies with lightning
 - [x] GELU unlocks at 5 kills — slows enemies to 40% speed for 5s, ramps back over 2s; words get ice-blue tint that fades with speed
@@ -132,7 +132,7 @@ that bend the rules. Enemies fight back. You can win and lose.
 - [ ] Auto-focus highlights the enemy word matching the current typed prefix (nearest if empty) — logic implemented; visual intentionally removed (all words uniform per design change)
 - [x] Nexus two-phase fight: type Phase 1 word → transform + 2 Acutus spawn → type Phase 2 word → death
 - [x] Startup constraint check verifies no spell/enemy word prefix collision
-- [ ] Enemy enters threat radius → red warning flash (0.3s) → contact damage → health shown in HUD — damage logic done; red flash visual missing
+- [x] Enemy enters threat radius → red warning flash (0.3s) → contact damage → health shown in HUD
 - [x] Player death → "game over" screen with score
 - [x] Wave complete → next wave spawns with more/harder enemies
 - [x] At least 2 enemy types with different stats and word lengths

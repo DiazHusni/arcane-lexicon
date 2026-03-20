@@ -68,6 +68,7 @@ export interface WorldState {
   scene: THREE.Scene | null
   labelContainer: HTMLElement | null
   waveUsedWords: Set<string>
+  pendingKillVfx: Array<{ worldPos: THREE.Vector3; points: number }>
 }
 
 export function createWorldState(
@@ -83,6 +84,7 @@ export function createWorldState(
     scene,
     labelContainer,
     waveUsedWords: new Set(),
+    pendingKillVfx: [],
   }
 }
 
@@ -129,6 +131,7 @@ export function startGameDebug(world: WorldState): void {
 /** Restart: full scene cleanup then Wave 1. */
 export function restartGame(world: WorldState): void {
   cleanupScene(world)
+  world.pendingKillVfx = []
   world.gameData = createGameData()
   world.gameData = { ...world.gameData, phase: 'PLAYING' }
   spawnWave(world)
@@ -473,6 +476,8 @@ function killEnemy(world: WorldState, enemy: Enemy): void {
   unregisterEnemy(enemy.id, enemy.displayWord)
 
   const points = Math.floor(enemy.tierPoints * world.gameData.comboMultiplier)
+  world.pendingKillVfx.push({ worldPos: enemy.position.clone(), points })
+
   const newCombo = Math.min(COMBO_MAX, world.gameData.comboMultiplier + COMBO_STEP)
 
   world.gameData = {

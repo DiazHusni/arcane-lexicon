@@ -10,6 +10,7 @@ import {
 import { processTick } from './game/loop'
 import { createWorldState, update as worldUpdate, handleInput, startGame, startGameDebug, restartGame, getEnemyMaps } from './game/state'
 import { createPlayer } from './entities/player'
+import { spawnKillVfx } from './renderer/vfx'
 import { FIXED_STEP } from './constants/game'
 
 // ── Bootstrap ──────────────────────────────────────────────────────────────
@@ -70,6 +71,15 @@ function render(_alpha: number): void {
   // Compute auto-focus
   const { words: enemyWords, positions: enemyPositions } = getEnemyMaps(world)
   const focusedId = findAutoFocusEnemy(buffer, enemyWords, 0, 0, enemyPositions)
+
+  // Consume pending kill VFX events (project 3D → screen, spawn DOM effects)
+  for (const vfx of world.pendingKillVfx) {
+    const v = vfx.worldPos.clone().project(renderCtx.camera)
+    const sx = Math.round(((v.x + 1) / 2) * window.innerWidth)
+    const sy = Math.round(((-v.y + 1) / 2) * window.innerHeight)
+    spawnKillVfx(sx, sy, vfx.points)
+  }
+  world.pendingKillVfx = []
 
   syncHud(hud, {
     wordBuffer: buffer,

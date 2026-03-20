@@ -209,3 +209,37 @@ html, body {
   0%, 100% { opacity: 0.5; }
   50% { opacity: 1.0; }
 }
+
+/* ── Kill VFX ───────────────────────────────────────────────────────────── */
+
+.kill-score {
+  position: absolute;
+  transform: translateX(-50%);
+  color: #EAB308;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  pointer-events: none;
+  animation: kill-score-float 0.85s ease-out forwards;
+}
+
+.kill-particle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #F59E0B;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  animation: kill-particle-burst 0.45s ease-out forwards;
+}
+
+@keyframes kill-score-float {
+  0%   { opacity: 1;   transform: translateX(-50%) translateY(0); }
+  100% { opacity: 0;   transform: translateX(-50%) translateY(-44px); }
+}
+
+@keyframes kill-particle-burst {
+  0%   { opacity: 1;   transform: translate(-50%, -50%) translate(0, 0); }
+  100% { opacity: 0;   transform: translate(-50%, -50%) translate(var(--dx), var(--dy)); }
+}

@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import type { GameData } from '../types/index'
 import type { Enemy } from '../entities/enemy'
 import { COLORS, SPELL_COLORS } from '../constants/colors'
+import { DAMAGE_WARNING_MS } from '../constants/game'
 
 export interface HudElements {
   wordEl: HTMLElement
@@ -110,6 +111,8 @@ export function syncHud(hud: HudElements, data: HudSyncData): void {
     if (!enemy.markedForDeath) {
       enemy.labelEl.style.opacity = '0.9'
       enemy.labelEl.style.fontSize = '12px'
+      const inWarning = enemy.damageWarningTimer < DAMAGE_WARNING_MS && enemy.damageCooldown === 0
+      enemy.labelEl.style.color = inWarning ? COLORS.CRIMSON : ''
     }
   }
 }
