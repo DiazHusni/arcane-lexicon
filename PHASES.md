@@ -109,7 +109,7 @@ that bend the rules. Enemies fight back. You can win and lose.
 - Minimal spell effects (color flash, basic particles on cast)
 - Basic sound effects (spell fire, enemy death, player hit)
 - Wave system: enemies spawn in numbered waves, difficulty increases
-  - Enemy count: `Math.floor(3 + wave * 1.5)` (Wave 1: 4, Wave 5: 11, Wave 10: 18)
+  - Enemy count: `Math.floor(8.5 + wave * 1.5)` (Wave 1: 10, Wave 5: 16, Wave 10: 23)
   - Type distribution: see ARCHITECTURE.md → Wave Difficulty Formula
   - Enemy speed scales per wave: `min(2.0, 1.0 + wave * 0.05)` — 5% faster each wave, capped at 2x (replaces removed attackTimerScale; proximity pressure = difficulty)
   - Word length ceiling increases with wave: Wave 1 Acutus = 3 letters; Wave 8+ = 4 letters

@@ -2,10 +2,10 @@ import { describe, it, expect } from 'vitest'
 import { enemyCount, spawnDistribution, speedScale, getSpawnList } from './wave'
 
 describe('enemyCount', () => {
-  it('wave 1 → 4', () => expect(enemyCount(1)).toBe(4))
-  it('wave 2 → 6', () => expect(enemyCount(2)).toBe(6))
-  it('wave 5 → 10', () => expect(enemyCount(5)).toBe(10))
-  it('wave 10 → 18', () => expect(enemyCount(10)).toBe(18))
+  it('wave 1 → 10', () => expect(enemyCount(1)).toBe(10))
+  it('wave 2 → 11', () => expect(enemyCount(2)).toBe(11))
+  it('wave 5 → 16', () => expect(enemyCount(5)).toBe(16))
+  it('wave 10 → 23', () => expect(enemyCount(10)).toBe(23))
 })
 
 describe('speedScale', () => {

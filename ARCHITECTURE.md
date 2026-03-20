@@ -361,8 +361,8 @@ If `prefers-reduced-motion` is set, amplitude = 0 for all shake events.
 ```typescript
 // Wave N: how many enemies spawn?
 function enemyCount(wave: number): number {
-  return Math.floor(3 + wave * 1.5)
-  // Wave 1: 4  Wave 2: 6  Wave 3: 7  Wave 5: 11  Wave 10: 18
+  return Math.floor(8.5 + wave * 1.5)
+  // Wave 1: 10  Wave 2: 11  Wave 5: 16  Wave 10: 23
 }
 
 // Wave N: enemy type distribution

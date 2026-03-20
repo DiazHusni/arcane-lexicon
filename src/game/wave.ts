@@ -2,7 +2,7 @@ import type { EnemyType } from '../types/enemy'
 
 /** Total enemy count for a given wave number. */
 export function enemyCount(wave: number): number {
-  return Math.floor(3 + wave * 1.5)
+  return Math.floor(8.5 + wave * 1.5)
 }
 
 /** Fractional distribution of enemy types per wave. */

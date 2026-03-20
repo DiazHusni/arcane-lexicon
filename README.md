@@ -41,7 +41,7 @@ The technical skeleton. Nothing is "fun" yet, but the foundation is solid and te
 
 - [x] Git repo, `.gitignore`, Vite + TypeScript scaffold
 - [x] Three.js scene with **EffectComposer pipeline** from day 1 (RenderPass + OutputPass; bloom stub ready for Phase 3)
-- [x] Arena: 20×20 floor plane + 4 boundary walls + grid overlay
+- [x] Arena: 32×32 floor plane + 4 boundary walls + grid overlay
 - [x] Perspective camera — top-down isometric angle above arena
 - [x] Player placeholder (purple sphere) at arena centre
 - [x] Keyboard input — A–Z and Backspace only; all other keys silently ignored
