@@ -35,7 +35,7 @@ export function move(
   allEnemies: Enemy[],
   dt: number,
 ): void {
-  if (!enemy.alive || enemy.markedForDeath) return
+  if (!enemy.alive) return
   if (enemy.stunTimer > 0) {
     enemy.stunTimer = Math.max(0, enemy.stunTimer - dt)
     return
@@ -94,7 +94,7 @@ export function tickProximityDamage(
   playerPos: THREE.Vector3,
   dt: number,
 ): DamageEvent | null {
-  if (!enemy.alive || enemy.markedForDeath) return null
+  if (!enemy.alive) return null
 
   const dist = enemy.position.distanceTo(playerPos)
   if (dist > enemy.threatRadius) {
@@ -120,7 +120,6 @@ export function tickProximityDamage(
 
 export function markForDeath(enemy: Enemy): void {
   enemy.markedForDeath = true
-  enemy.damageWarningTimer = DAMAGE_WARNING_MS
   if (enemy.labelEl) enemy.labelEl.style.opacity = '0.2'
 }
 

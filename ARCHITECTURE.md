@@ -55,7 +55,7 @@ game/input.ts
         │ YES                           NO
         ▼                               │
   triggerEnemyKill(enemy)                     │
-    ├── entities/enemy.ts: markForDeath()     │  ← freeze movement + attack timer
+    ├── entities/enemy.ts: markForDeath()     │  ← dim label; enemy keeps moving
     ├── entities/projectile.ts: spawn(        │
     │     origin: player.position,            │
     │     target: enemy,                      │

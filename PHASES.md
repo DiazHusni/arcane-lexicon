@@ -75,7 +75,7 @@ that bend the rules. Enemies fight back. You can win and lose.
 - **Kill projectile system** (`entities/projectile.ts`)
   - Spawns on enemy word match; travels at 12 u/s toward the marked enemy
   - Size = `lerp(0.08, 0.40, (wordLength - 3) / 9)` — longer words = bigger fireball
-  - Marked enemy: movement + attack timer frozen, word billboard dims to 20% opacity
+  - Marked enemy: continues moving toward player, word billboard dims to 20% opacity
   - On impact: enemy dies, particle burst (count scales with word length), score delta floats up
   - Pre-allocated pool (10 slots) — never dynamically allocated mid-game
 - **Spell system** (word → effect mapping, cooldowns, unlock progression)
@@ -122,7 +122,7 @@ that bend the rules. Enemies fight back. You can win and lose.
 
 - [ ] Each enemy spawns with an English word displayed above it
 - [ ] Type an enemy's exact word → amber fireball launches toward that enemy
-- [ ] Enemy is marked for death on word completion: freezes in place, word dims to 20% opacity
+- [ ] Enemy is marked for death on word completion: keeps moving, word dims to 20% opacity
 - [ ] Projectile impacts enemy → geometry shatters, particle burst, score delta floats up
 - [ ] Projectile size visibly larger for longer words (3-letter dart vs 12-letter fireball)
 - [ ] FULMEN available from start — casting it kills the 3 nearest enemies with lightning

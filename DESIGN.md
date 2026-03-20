@@ -55,7 +55,7 @@ and type a spell word to bend the rules? The interruption IS the cost.
 When a word match fires, an amber fireball launches from the player toward the matched enemy.
 
 **Marked-for-death state (instant, on word completion):**
-- Enemy stops moving and attacking — attack timer freezes
+- Enemy continues moving toward the player — still a threat until the projectile lands
 - Enemy's word billboard fades to 20% opacity and pulses slowly
 - Subtle amber point light appears at the enemy's position (pre-impact glow)
 
@@ -71,7 +71,7 @@ When a word match fires, an amber fireball launches from the player toward the m
   ```
 - Color: amber core (`#F59E0B`) → orange outer glow (`#EA580C`), emissive material (blooms)
 - Ember particle trail: 8 particles/frame, 200ms lifetime, amber → transparent
-- Tracks to the enemy's frozen position (enemy is stationary once marked)
+- Tracks to the enemy's current position (enemy keeps moving until impact)
 
 **Impact (projectile reaches enemy):**
 - Enemy geometry shatters outward (faces fly apart), then particle burst
@@ -560,8 +560,8 @@ Each spell must be visually distinct at a glance. The visual signature IS the sp
 | Title idle | Particles drift, title pulses gently | Until click/Enter |
 | Game start | Wave 1 spawns, enemies appear | On player input |
 | Combat active | Normal gameplay | Until wave ends or player dies |
-| Word match (kill trigger) | Kill projectile launches; matched enemy marked for death (freezes, word dims) | Instant |
-| Projectile in flight | Amber fireball tracks toward frozen enemy; ember trail | ~0.15–0.4s travel |
+| Word match (kill trigger) | Kill projectile launches; matched enemy marked for death (keeps moving, word dims) | Instant |
+| Projectile in flight | Amber fireball tracks toward moving enemy; ember trail | ~0.15–0.4s travel |
 | Projectile impact | Enemy shatters + particle burst (scaled to word length); score delta | 0.5s death anim |
 | Spell cast (success) | Spell VFX + point light + spellbook slot flash | VFX lasts 0.5–2s |
 | Spell unlocked | Centered overlay with spell name + description; slot glows | 0.8s overlay |
