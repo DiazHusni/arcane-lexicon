@@ -43,7 +43,7 @@ technical foundation is solid, tested, and deployable.
 - [x] Type on keyboard → current word appears in HUD
 - [x] Backspace clears the current word
 - [x] 60fps on a mid-range laptop
-- [ ] Deployed to a public URL
+- [x] Deployed to a public URL
 - [x] Unit tests passing (`vitest run`) with 80%+ coverage of:
   - `game/input.ts` — word buffer: append char, backspace, clear on match, non-alpha ignored — 15 tests, 100% coverage
   - `game/loop.ts` — fixed timestep accuracy — 11 tests, 100% coverage
@@ -120,23 +120,23 @@ that bend the rules. Enemies fight back. You can win and lose.
 
 **Deliverables:**
 
-- [ ] Each enemy spawns with an English word displayed above it
-- [ ] Type an enemy's exact word → amber fireball launches toward that enemy
-- [ ] Enemy is marked for death on word completion: keeps moving, word dims to 20% opacity
+- [x] Each enemy spawns with an English word displayed above it
+- [x] Type an enemy's exact word → amber fireball launches toward that enemy
+- [x] Enemy is marked for death on word completion: keeps moving, word dims to 20% opacity
 - [ ] Projectile impacts enemy → geometry shatters, particle burst, score delta floats up
-- [ ] Projectile size visibly larger for longer words (3-letter dart vs 12-letter fireball)
-- [ ] FULMEN available from start — casting it kills the 3 nearest enemies with lightning
-- [ ] GELU unlocks at 5 kills — slows enemies to 40% speed for 5s, ramps back over 2s; words get ice-blue tint that fades with speed
-- [ ] ARMA unlocks at 15 kills — dome blocks next contact damage; on trigger, pushes + stuns nearby enemies (2.5u radius, 2s stun); cooldown 14s starts on shield expiry
-- [ ] BREVE unlocks at 25 kills — shortens all enemy words by 3 letters for 5s
-- [ ] Auto-focus highlights the enemy word matching the current typed prefix (nearest if empty)
-- [ ] Nexus two-phase fight: type Phase 1 word → transform + 2 Acutus spawn → type Phase 2 word → death
-- [ ] Startup constraint check verifies no spell/enemy word prefix collision
-- [ ] Enemy enters threat radius → red warning flash (0.3s) → contact damage → health shown in HUD
-- [ ] Player death → "game over" screen with score
-- [ ] Wave complete → next wave spawns with more/harder enemies
-- [ ] At least 2 enemy types with different stats and word lengths
-- [ ] Unit tests passing with 80%+ coverage of:
+- [x] Projectile size visibly larger for longer words (3-letter dart vs 12-letter fireball)
+- [x] FULMEN available from start — casting it kills the 3 nearest enemies with lightning
+- [x] GELU unlocks at 5 kills — slows enemies to 40% speed for 5s, ramps back over 2s; words get ice-blue tint that fades with speed
+- [x] ARMA unlocks at 15 kills — dome blocks next contact damage; on trigger, pushes + stuns nearby enemies (2.5u radius, 2s stun); cooldown 14s starts on shield expiry
+- [x] BREVE unlocks at 25 kills — shortens all enemy words by 3 letters for 5s
+- [ ] Auto-focus highlights the enemy word matching the current typed prefix (nearest if empty) — logic implemented; visual intentionally removed (all words uniform per design change)
+- [x] Nexus two-phase fight: type Phase 1 word → transform + 2 Acutus spawn → type Phase 2 word → death
+- [x] Startup constraint check verifies no spell/enemy word prefix collision
+- [ ] Enemy enters threat radius → red warning flash (0.3s) → contact damage → health shown in HUD — damage logic done; red flash visual missing
+- [x] Player death → "game over" screen with score
+- [x] Wave complete → next wave spawns with more/harder enemies
+- [x] At least 2 enemy types with different stats and word lengths
+- [x] Unit tests passing with 80%+ coverage of:
   - `game/input.ts` — dual match: enemy word kill, spell cast, dead-end clear; auto-focus prefix logic
   - `spells/system.ts` — all 4 spell effects, ARMA deferred cooldown, shield expiry
   - `spells/unlocks.ts` — kill milestone tracking, unlock events
