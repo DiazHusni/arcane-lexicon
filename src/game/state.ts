@@ -406,7 +406,7 @@ function tickPlaying(world: WorldState, dt: number): void {
   // Sync label positions handled by HUD renderer (passed via syncHud)
 
   // Check wave complete
-  const aliveEnemies = world.enemies.filter(e => e.alive || e.markedForDeath)
+  const aliveEnemies = world.enemies.filter(e => e.alive)
   if (aliveEnemies.length === 0 && world.enemies.length > 0) {
     world.gameData = {
       ...world.gameData,
