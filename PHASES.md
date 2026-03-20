@@ -165,6 +165,20 @@ something visually striking.
 
 **What you're building:**
 
+- **Arena floor redesign** — replace placeholder square grid with the final art:
+  - Hexagonal floor plane with beveled edges (`CylinderGeometry`, 6 sides, bevel via `EdgesGeometry` accent lines)
+  - Floor material: `#0E0E28` (see DESIGN.md color table), emissive 0 (never blooms)
+  - Remove grid overlay; replace with subtle hex-cell pattern or bare flat surface
+  - Boundary walls remain; adjust to match new floor shape
+- **Player mesh redesign** — replace placeholder purple sphere with final art:
+  - Arcane sigil / rune ring: a flat torus or ring geometry (`TorusGeometry`) that rotates slowly
+  - Color: soft white `#E8E4D8`, emissive so it glows faintly and blooms
+  - Small ambient glow effect (dim PointLight at player position, always on, intensity 0.3)
+- **Enemy material + intensity-driven color system:**
+  - Enemies use `MeshLambertMaterial` with emissive tint; not just diffuse color
+  - At low game intensity (waves 1–3): cold blue `#4A6FA5` base color
+  - At high intensity (waves 7+): material warms linearly toward amber `#F59E0B`
+  - Intensity = `Math.min(1, (wave - 1) / 6)` — drives both enemy color and bloom strength
 - Particle system — ring buffer, 50K pre-allocated particles, zero runtime alloc
   - Per-spell parameters: see ARCHITECTURE.md → Particle System Specification
 - Per-spell 3D visual effects — each spell looks and feels distinct
@@ -191,6 +205,9 @@ something visually striking.
 
 **Deliverables:**
 
+- [ ] Arena floor is a hexagonal plane with beveled edges — grid overlay gone
+- [ ] Player is a glowing rune ring, not a sphere
+- [ ] Enemy color warms from cold blue (early waves) to amber (late waves) as intensity rises
 - [ ] Each of the 6 spells has a distinct particle + light effect
 - [ ] Enemies have a "dying" animation (not instant disappear)
 - [ ] Scene has atmospheric depth (fog, ambient glow, background elements)
