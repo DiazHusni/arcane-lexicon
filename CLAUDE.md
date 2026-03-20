@@ -9,6 +9,7 @@ follow this order:
    and/or `ARCHITECTURE.md` to reflect the intended change before touching any code.
 2. **Then implement** — Apply the change in the source code.
 3. **Then test** — Run `npm test` and confirm all tests pass before committing.
+4. **Then push** — Commit and push all changes (docs + code) once tests are green.
 
 Documentation files and what they own:
 - `PHASES.md` — deliverable checklists, per-system descriptions, balance values

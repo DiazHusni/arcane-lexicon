@@ -464,9 +464,16 @@ function applyDamage(world: WorldState, damage: number, sourceEnemy: Enemy): voi
 
   if (newHealth <= 0) {
     world.gameData = { ...world.gameData, phase: 'DYING', dyingTimer: DYING_MS }
-    // Mark source enemy so it doesn't keep damaging during dying
-    sourceEnemy.markedForDeath = true
   }
+
+  // Enemy self-destructs after dealing damage — no kill credit
+  selfDestructEnemy(world, sourceEnemy)
+}
+
+function selfDestructEnemy(world: WorldState, enemy: Enemy): void {
+  if (!enemy.alive || enemy.markedForDeath) return
+  die(enemy)
+  unregisterEnemy(enemy.id, enemy.displayWord)
 }
 
 function killEnemy(world: WorldState, enemy: Enemy): void {

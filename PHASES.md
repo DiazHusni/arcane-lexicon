@@ -133,6 +133,7 @@ that bend the rules. Enemies fight back. You can win and lose.
 - [x] Nexus two-phase fight: type Phase 1 word → transform + 2 Acutus spawn → type Phase 2 word → death
 - [x] Startup constraint check verifies no spell/enemy word prefix collision
 - [x] Enemy enters threat radius → red warning flash (0.3s) → contact damage → health shown in HUD
+- [x] Enemy self-destructs after dealing contact damage (no kill credit, no score)
 - [x] Player death → "game over" screen with score
 - [x] Wave complete → next wave spawns with more/harder enemies
 - [x] At least 2 enemy types with different stats and word lengths
@@ -217,6 +218,8 @@ variety, multiple arenas, and enough content that a session feels substantial.
 - Advanced spells with more complex effects (AoE, DoT, multi-hit, terrain)
 - 4+ enemy types with different behaviors (charger, ranged attacker, splitter,
   shielder)
+- TODO: varied on-contact self-destruct effects per enemy type (e.g. explosion AoE,
+  slow burst, push wave) — each type has a distinct consequence when it reaches the player
 - 3+ distinct arenas with different layouts and atmosphere
 - Spell cooldown UI (visual indicator per spell)
 - Combo system: casting certain sequences grants a bonus
