@@ -152,24 +152,24 @@ enemy words — none kill enemies directly.
 
 | Word      | Latin meaning | Effect                                                        | Cooldown      | Unlock   | Letters |
 |-----------|---------------|---------------------------------------------------------------|---------------|----------|---------|
-| `FULMEN`  | thunderbolt   | Lightning arc — kills the 3 nearest enemies                   | 5s            | Start    | 6       |
-| `GELU`    | frost/cold    | Slow all enemies to 40% speed for 7s (2s ramp-back); words ice over | 4s     | 5 kills  | 4       |
-| `ARMA`    | armor/shield  | Dome blocks next contact damage; on trigger, pushes + stuns all enemies within 2.5u for 2s | 14s after shield expiry | 15 kills | 4 |
-| `BREVE`   | brief/short   | Shorten all enemy words by 3 letters for 5s                   | 6s            | 25 kills | 5       |
+| `FULMEN`  | thunderbolt   | Lightning arc — kills the 3 nearest enemies                   | 15s           | Start    | 6       |
+| `GELU`    | frost/cold    | Slow all enemies to 40% speed for 7s (2s ramp-back); words ice over | 12s    | 5 kills  | 4       |
+| `ARMA`    | armor/shield  | Dome blocks next contact damage; on trigger, pushes + stuns all enemies within 6u for 2s (nearest fly furthest) | 25s after shield expiry | 15 kills | 4 |
+| `BREVE`   | brief/short   | Shorten all enemy words by 3 letters for 5s                   | 18s           | 25 kills | 5       |
 
 **Spell taxonomy:**
 - FULMEN + GELU = offensive/control (eliminate threats, buy time)
 - ARMA + BREVE = defensive/adaptive (survive contact, reduce typing burden)
 
-**ARMA cooldown rule:** the 14s cooldown does NOT start when ARMA is cast. It starts when
-the shield expires — either by absorbing a hit (contact trigger), or by the 15s passive expiry.
+**ARMA cooldown rule:** the 25s cooldown does NOT start when ARMA is cast. It starts when
+the shield expires — either by absorbing a hit (contact trigger), or by the 3s passive expiry.
 While the dome is active, the cooldown timer is frozen. This encourages proactive casting: using
 ARMA early doesn't penalize you by burning the cooldown before the shield is used.
 
 **ARMA contact trigger:** when an enemy touches the player while the dome is active —
-(1) contact damage is nullified, (2) all enemies within 2.5u are pushed radially outward
-(force scales with proximity: nearest enemy flies furthest), (3) all pushed enemies are
-stunned for 2s (movement frozen), (4) dome is consumed.
+(1) contact damage is nullified, (2) all enemies within 6u are pushed radially outward
+(force scales with proximity: nearest enemy flies furthest, max 8u — min 3.2u at edge),
+(3) all pushed enemies are stunned for 2s (movement frozen), (4) dome is consumed.
 
 **Spell design notes:**
 - `FULMEN` and `GELU` are the "obvious" spells — familiar power fantasies, available early

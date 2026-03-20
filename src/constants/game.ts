@@ -37,10 +37,13 @@ export const PROJECTILE_SPEED = 12
 export const PROJECTILE_POOL_SIZE = 10
 
 /** ARMA: shield passive expiry time (ms) */
-export const ARMA_SHIELD_EXPIRY_MS = 15000
+export const ARMA_SHIELD_EXPIRY_MS = 3000
 
 /** ARMA: push + stun radius on contact trigger (world units) */
-export const ARMA_PUSH_RADIUS = 2.5
+export const ARMA_PUSH_RADIUS = 6.0
+
+/** ARMA: max push force applied to the nearest enemy (world units) */
+export const ARMA_PUSH_FORCE = 8.0
 
 /** ARMA: stun duration applied to nearby enemies on contact trigger (ms) */
 export const ARMA_STUN_MS = 2000

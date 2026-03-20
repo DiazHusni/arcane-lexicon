@@ -107,10 +107,9 @@ export function syncHud(hud: HudElements, data: HudSyncData): void {
     enemy.labelEl.style.left = `${screenPos.x}px`
     enemy.labelEl.style.top = `${screenPos.y - 40}px`
 
-    const isFocused = enemy.id === focusedEnemyId
     if (!enemy.markedForDeath) {
-      enemy.labelEl.style.opacity = isFocused ? '1.0' : '0.4'
-      enemy.labelEl.style.fontSize = isFocused ? '14px' : '11px'
+      enemy.labelEl.style.opacity = '0.9'
+      enemy.labelEl.style.fontSize = '12px'
     }
   }
 }

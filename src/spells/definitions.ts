@@ -10,7 +10,7 @@ import {
 export const SPELL_DEFINITIONS: SpellDefinition[] = [
   {
     word: 'fulmen',
-    cooldownMs: 5000,
+    cooldownMs: 15000,
     target: 'all',
     effect: { type: 'aoe_clear', radius: FULMEN_RADIUS, maxTargets: 3 },
     vfxKey: 'fulmen',
@@ -19,7 +19,7 @@ export const SPELL_DEFINITIONS: SpellDefinition[] = [
   },
   {
     word: 'gelu',
-    cooldownMs: 4000,
+    cooldownMs: 12000,
     target: 'all',
     effect: { type: 'freeze', durationMs: GELU_SLOW_TOTAL_MS },
     vfxKey: 'gelu',
@@ -28,7 +28,7 @@ export const SPELL_DEFINITIONS: SpellDefinition[] = [
   },
   {
     word: 'arma',
-    cooldownMs: 14000,
+    cooldownMs: 25000,
     target: 'player',
     effect: { type: 'shield', blocksNextHit: true, expiryMs: ARMA_SHIELD_EXPIRY_MS },
     vfxKey: 'arma',
@@ -37,7 +37,7 @@ export const SPELL_DEFINITIONS: SpellDefinition[] = [
   },
   {
     word: 'breve',
-    cooldownMs: 6000,
+    cooldownMs: 18000,
     target: 'all',
     effect: { type: 'shorten', letters: BREVE_SHORTEN_LETTERS, durationMs: BREVE_DURATION_MS },
     vfxKey: 'breve',

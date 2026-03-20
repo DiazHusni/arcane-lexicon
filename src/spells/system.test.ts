@@ -64,7 +64,7 @@ describe('startCooldown', () => {
     const spells = allUnlocked()
     const updated = startCooldown(spells, 'gelu')
     const gelu = updated.find(s => s.word === 'gelu')!
-    expect(gelu.cooldownRemaining).toBe(4000)  // GELU cooldown from definitions
+    expect(gelu.cooldownRemaining).toBe(12000)  // GELU cooldown from definitions
   })
 
   it('does not affect other spells', () => {
@@ -132,14 +132,14 @@ describe('castSpell', () => {
     expect(result.aoeRadius).not.toBeNull()
     expect(result.aoeRadius).toBeGreaterThan(0)
     const fulmen = result.spells.find(s => s.word === 'fulmen')!
-    expect(fulmen.cooldownRemaining).toBe(5000)
+    expect(fulmen.cooldownRemaining).toBe(15000)
   })
 
   it('GELU — sets geluActivated, starts cooldown', () => {
     const result = castSpell(allUnlocked(), 'gelu')
     expect(result.geluActivated).toBe(true)
     const gelu = result.spells.find(s => s.word === 'gelu')!
-    expect(gelu.cooldownRemaining).toBe(4000)
+    expect(gelu.cooldownRemaining).toBe(12000)
   })
 
   it('ARMA — sets shieldActivated, does NOT start cooldown (deferred)', () => {
@@ -153,7 +153,7 @@ describe('castSpell', () => {
     const result = castSpell(allUnlocked(), 'breve')
     expect(result.breveActivated).toBe(true)
     const breve = result.spells.find(s => s.word === 'breve')!
-    expect(breve.cooldownRemaining).toBe(6000)
+    expect(breve.cooldownRemaining).toBe(18000)
   })
 
   it('unknown word returns unchanged spells', () => {

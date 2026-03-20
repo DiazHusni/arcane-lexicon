@@ -45,6 +45,7 @@ import {
   PROJECTILE_POOL_SIZE,
   ARENA_HALF_SIZE,
   ARMA_PUSH_RADIUS,
+  ARMA_PUSH_FORCE,
   ARMA_STUN_MS,
   ARMA_SHIELD_EXPIRY_MS,
   GELU_SLOW_TOTAL_MS,
@@ -434,12 +435,15 @@ function applyDamage(world: WorldState, damage: number, sourceEnemy: Enemy): voi
     const playerPos = new THREE.Vector3(0, 0.5, 0)
     for (const e of world.enemies) {
       if (!e.alive || e.markedForDeath) continue
-      if (e.position.distanceTo(playerPos) <= ARMA_PUSH_RADIUS) {
+      const distToPlayer = e.position.distanceTo(playerPos)
+      if (distToPlayer <= ARMA_PUSH_RADIUS) {
         applyStun(e, ARMA_STUN_MS)
+        const proximity = 1 - distToPlayer / ARMA_PUSH_RADIUS
+        const force = ARMA_PUSH_FORCE * (0.4 + 0.6 * proximity)
         const pushDir = new THREE.Vector3()
           .subVectors(e.position, playerPos)
           .normalize()
-          .multiplyScalar(2.0)
+          .multiplyScalar(force)
         e.position.add(pushDir)
         e.mesh.position.copy(e.position)
       }
