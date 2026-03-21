@@ -313,14 +313,14 @@ Write pointer wraps around — oldest particles are overwritten first.
 
 | Spell  | Count | Lifetime | Speed | Size (start→end) | Spread | Color |
 |--------|-------|----------|-------|------------------|--------|-------|
-| FULMEN | 500   | 400ms    | 8 u/s | 0.02→0.00 | 15° arc along each lightning chain | Gold `#EAB308` |
-| GELU   | 300   | 600ms    | 3 u/s | 0.03→0.03 | 360° radial from player | Teal `#2DD4BF` |
-| ARMA   | 150   | 1000ms   | 1 u/s | 0.04→0.00 | Hemisphere above player, drift up; burst on shield shatter | White `#E8E4D8` |
-| BREVE  | 200   | 300ms    | 4 u/s | 0.02→0.00 | Left-to-right sweep across arena | Cold blue `#4A6FA5` |
-| Kill projectile trail | 8/frame | 200ms | 1 u/s | 0.02→0.00 | Behind projectile, slight spread | Amber `#F59E0B` |
-| Kill projectile impact | 50 + wordLen*20 | 1000ms | 4 u/s | 0.05→0.00 | 360° burst from impact | Amber → orange |
+| FULMEN | 500   | 400ms    | 8 u/s | 0.02→0.00 | 15° arc along each lightning chain | Triforce gold `#F0C040` |
+| GELU   | 300   | 600ms    | 3 u/s | 0.03→0.03 | 360° radial from player | Ice blue `#7DD4F0` |
+| ARMA   | 150   | 1000ms   | 1 u/s | 0.04→0.00 | Hemisphere above player, drift up; burst on shield shatter | Hylian parchment `#E8D9B8` |
+| BREVE  | 200   | 300ms    | 4 u/s | 0.02→0.00 | Left-to-right sweep across arena | Sheikah blue `#00D4FF` |
+| Kill projectile trail | 8/frame | 200ms | 1 u/s | 0.02→0.00 | Behind projectile, slight spread | Triforce gold `#F0C040` |
+| Kill projectile impact | 50 + wordLen*20 | 1000ms | 4 u/s | 0.05→0.00 | 360° burst from impact | Gold → Sheikah orange |
 | Enemy death (marked) | 300 | 1000ms | 4 u/s | 0.05→0.00 | 360° burst from death point | Enemy tier color |
-| Player hit  | 100 | 300ms  | 3 u/s | 0.03→0.00 | 360° from player | Red `#EF4444` |
+| Player hit  | 100 | 300ms  | 3 u/s | 0.03→0.00 | 360° from player | Calamity red `#FF3A00` |
 
 **Size interpolation:** `currentSize = startSize + (endSize - startSize) * (1 - life/maxLife)`
 **Opacity interpolation:** `opacity = pow(life / maxLife, 0.5)` (fast initial opacity, slow fade)

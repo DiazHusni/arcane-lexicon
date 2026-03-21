@@ -15,8 +15,8 @@ export function createPlayer(scene: THREE.Scene): Player {
   // Rune ring — flat torus that rotates slowly
   const geo = new THREE.TorusGeometry(0.55, 0.08, 8, 36)
   const mat = new THREE.MeshLambertMaterial({
-    color:             0xe8e4d8,
-    emissive:          new THREE.Color(0xe8e4d8),
+    color:             0x00D4FF,
+    emissive:          new THREE.Color(0x00D4FF),
     emissiveIntensity: 0.6,
   })
   const mesh = new THREE.Mesh(geo, mat)
@@ -25,7 +25,7 @@ export function createPlayer(scene: THREE.Scene): Player {
   scene.add(mesh)
 
   // Dim ambient glow — always present
-  const glow = new THREE.PointLight(0xe8e4d8, 0.3, 4)
+  const glow = new THREE.PointLight(0x00D4FF, 0.3, 4)
   glow.position.set(0, 0.5, 0)
   scene.add(glow)
 

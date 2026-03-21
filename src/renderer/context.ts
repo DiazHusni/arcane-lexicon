@@ -72,8 +72,8 @@ export interface RenderContext {
 export function createRenderContext(canvas: HTMLCanvasElement): RenderContext {
   // ── Scene ────────────────────────────────────────────────────────────────
   const scene = new THREE.Scene()
-  scene.background = new THREE.Color(0x080816)
-  scene.fog = new THREE.FogExp2(0x080816, FOG_DENSITY)
+  scene.background = new THREE.Color(0x0A1628)
+  scene.fog = new THREE.FogExp2(0x0A1628, FOG_DENSITY)
 
   // ── Camera ───────────────────────────────────────────────────────────────
   const aspect = window.innerWidth / window.innerHeight
@@ -112,9 +112,9 @@ export function createRenderContext(canvas: HTMLCanvasElement): RenderContext {
   composer.addPass(new OutputPass())
 
   // ── Lighting ─────────────────────────────────────────────────────────────
-  const ambient = new THREE.AmbientLight(0x1a1830, 2)
+  const ambient = new THREE.AmbientLight(0x1A3824, 2)
   scene.add(ambient)
-  const dirLight = new THREE.DirectionalLight(0x9090cc, 1.5)
+  const dirLight = new THREE.DirectionalLight(0xFFE880, 1.8)
   dirLight.position.set(5, 12, 8)
   scene.add(dirLight)
 
@@ -198,7 +198,7 @@ function buildArena(scene: THREE.Scene): void {
   // Hexagonal floor — CylinderGeometry with 6 radial segments = regular hexagon
   const floorGeo = new THREE.CylinderGeometry(radius, radius, 0.15, 6, 1)
   const floorMat = new THREE.MeshLambertMaterial({
-    color:             0x0e0e28,
+    color:             0x1C2F22,
     emissive:          new THREE.Color(0x000000),
     emissiveIntensity: 0,
   })
@@ -209,7 +209,7 @@ function buildArena(scene: THREE.Scene): void {
   // Bevel accent lines on hex floor edges
   const edgesGeo = new THREE.EdgesGeometry(floorGeo)
   const edgesMat = new THREE.LineBasicMaterial({
-    color:       0x1e1a50,
+    color:       0x2E5C38,
     transparent: true,
     opacity:     0.7,
   })
@@ -219,7 +219,7 @@ function buildArena(scene: THREE.Scene): void {
 
   // Boundary walls — 6 panels along hex edges
   const wallMat = new THREE.MeshLambertMaterial({
-    color:       0x0a0a20,
+    color:       0x0E1F14,
     side:        THREE.DoubleSide,
     transparent: true,
     opacity:     0.55,

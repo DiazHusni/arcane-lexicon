@@ -94,7 +94,7 @@ Focus is automatic — no mode words, no keystrokes spent on UI management.
 - **Buffer empty:** default highlight = nearest enemy (closest to player).
 
 **Visual indicator:** The focused enemy's word floats above it in full-brightness text
-(`#C8C4BC`, 100% opacity). All other enemy words render at 40% opacity.
+(`#C8B89C`, 100% opacity). All other enemy words render at 40% opacity.
 
 **Design rationale:** The word the player is typing *is* their focus declaration. Removing
 explicit mode-switching means every keystroke is either a kill or a spell — never UI
@@ -200,7 +200,7 @@ is set by enemy tier. See Enemy Types below.
 All enemies:
 - Flat shading, no textures
 - Slow rotation while alive (each enemy rotates on its own axis)
-- Rendered in cold blue at low game intensity, warming toward amber at high intensity
+- Rendered in Sheikah blue at low game intensity, warming toward Sheikah orange at high intensity
 - Death: geometry shatters outward (explode into faces), then particle burst
 - **Assigned word:** each enemy spawns with an English word displayed above it
   - Word floats above the enemy geometry, always faces the camera (billboard)
@@ -241,9 +241,9 @@ to situational chaos. Phase 1→2 pairs are pre-set (not randomized).
 
 ## Visual Direction
 
-**Theme:** Cold, arcane, dark. Not fantasy-pink. Not Diablo-brown.
-Think: deep indigo space + cold blue runes + sharp geometric enemies +
-warm amber/gold spell effects that contrast against the dark.
+**Theme:** Breath of the Wild — ancient Hyrulean magic meets Sheikah technology.
+Think: deep night sky + Sheikah cyan runes + geometric stone-and-moss arena +
+golden Triforce spell fire and ice-blue frost that glow against the dark wilderness.
 
 **3D Style:** Low-poly geometric enemies — platonic solid progression (triangle →
 tetrahedron → cube → octahedron). Each tier is visually distinct by shape AND
@@ -251,11 +251,11 @@ size: weak enemies are small and sharp; strong enemies are larger and rounder.
 Enemies render as solid geometry with flat shading (no texture maps) — Dieter
 Rams simplicity: shape does the work.
 
-Arena: flat hexagonal floor plane with beveled edges. Background is pure void
-(the `#080816` background color) — depth comes from the arena edge, not from
-skybox or background geometry. Atmospheric depth = Three.js `FogExp2` that
-thickens toward the arena edge, making enemies at the boundary feel distant and
-menacing. No skybox. No horizon. The void is the atmosphere.
+Arena: flat hexagonal floor plane with beveled edges. Background is a deep Hyrule
+night sky (`#0A1628`) — depth comes from the arena edge and warm directional light,
+not from skybox or background geometry. The floor reads as ancient mossy Sheikah
+stone (`#1C2F22`). Atmospheric depth = Three.js `FogExp2` that thickens toward the
+arena edge, making enemies at the boundary feel distant and menacing.
 
 Spell effects are the visual stars — enemies and environment should be
 relatively restrained so spells POP.
@@ -264,9 +264,9 @@ relatively restrained so spells POP.
 Enemies approach from all directions. Camera can shake on big spells.
 
 **Color journey (as the game escalates):**
-- Early waves: calm indigo + sparse cold blue particles
-- Mid game: amber spell fire, teal frost — warm vs. cold contrast emerges
-- Late waves / full combat: full spectrum, screen effects, bloom
+- Early waves: Sheikah blue glyphs + sparse cyan particles — calm and ancient
+- Mid game: Triforce gold spell fire, Zora ice-blue frost — warm vs. cold contrast
+- Late waves / full combat: full spectrum, Calamity orange-red surge, screen effects, bloom
 
 ---
 
@@ -406,26 +406,26 @@ Enemies approach from all directions. Camera can shake on big spells.
 
 ## Color Palette
 
-The color journey follows combat intensity. At low intensity the world is cold and sparse; as the player builds power it warms and blooms.
+The color journey follows combat intensity. At low intensity the world is serene and ancient; as the player builds power it blazes with Sheikah energy and Calamity fire.
 
 | Role | Hex | Usage |
 |------|-----|-------|
-| **Background** | `#080816` | Canvas, arena void |
-| **Arena surface** | `#0E0E28` | Floor plane, subtle separation from void |
-| **Cold blue** | `#4A6FA5` | Early-wave particles, enemy outlines at low intensity |
-| **Teal** | `#2DD4BF` | GELU spell effects, mid-intensity particle trails |
-| **Amber** | `#F59E0B` | Mid-intensity glow, warm contrast against cold |
-| **Gold** | `#EAB308` | FULMEN lightning, score text, high-intensity accents |
-| **Hot pink** | `#EC4899` | Late-intensity particle bursts, health-low warning |
-| **Crimson** | `#DC2626` | Nexus Phase 2 color, enemy attack flash |
-| **Soft white** | `#E8E4D8` | ARMA shield, BREVE flash, HUD text, near-peak effects |
+| **Background** | `#0A1628` | Canvas, deep Hyrule night sky |
+| **Arena surface** | `#1C2F22` | Floor plane — ancient mossy Sheikah stone |
+| **Sheikah blue** | `#00D4FF` | Enemy outlines at low intensity, BREVE spell, player ring, health bar |
+| **Ice blue** | `#7DD4F0` | GELU spell effects — Zora/Vah Medoh ice |
+| **Sheikah orange** | `#FF8C20` | Mid-intensity glow, projectile outer glow — Sheikah slate activation |
+| **Triforce gold** | `#F0C040` | FULMEN lightning, score text, projectile core — high-intensity accents |
+| **Calamity** | `#FF3A00` | Late-intensity bursts, health-low warning — Calamity Ganon malice |
+| **Crimson** | `#C01800` | Nexus Phase 2 color, enemy attack flash — deep danger |
+| **Hylian parchment** | `#E8D9B8` | ARMA shield, HUD text, near-peak effects — aged stone and wood |
 | **Peak white** | `#FFFFFF` | Bloom core at maximum intensity |
-| **HUD text** | `#C8C4BC` | Typed word, spellbook labels — warm off-white, not pure |
-| **HUD dim** | `#5A5660` | Inactive spells, wave counter, secondary info |
-| **Health full** | `#2DD4BF` | Health bar fill (teal — feels alive, not alarming) |
-| **Health low** | `#EC4899` | Health bar below 25% — shifts to hot pink (danger) |
+| **HUD text** | `#C8B89C` | Typed word, spellbook labels — warm Hylian stone tone |
+| **HUD dim** | `#3A5848` | Inactive spells, wave counter, secondary info — muted forest green |
+| **Health full** | `#00D4FF` | Health bar fill — Sheikah blue (alive and powered) |
+| **Health low** | `#FF3A00` | Health bar below 25% — Calamity orange-red (danger) |
 
-**Contrast principle:** Spell effects should be warm (amber/gold/pink); environment should be cold (indigo/blue). This makes spells visually dominant without any special render treatment.
+**Contrast principle:** Spell effects should be warm (gold/orange) or vivid cool (Sheikah cyan/ice); environment should be dark and natural (night sky, mossy stone). This makes spells visually dominant without any special render treatment.
 
 **Implementation:** Colors live as TypeScript constants in `src/constants/colors.ts`.
 Three.js materials reference these constants — no magic hex strings in component code.
@@ -499,12 +499,12 @@ Each spell must be visually distinct at a glance. The visual signature IS the sp
 
 | Spell | Color | Shape | Motion | Sound signature |
 |-------|-------|-------|--------|-----------------|
-| `FULMEN` | Gold + white flash | Arc chains from player → 3 nearest enemies | Near-instant outward chains | Sharp crack + chain buzz |
-| `GELU` | Teal + ice-white | Expanding ring from player; enemy words frost over | Radially outward 0.5s; words + enemy geometry get blue tint, fades with speed during 2s ramp-back | High crystal ping, reverb tail |
-| `ARMA` | Soft white + blue edge | Hemisphere dome over player; shatters on hit absorbed or 15s expiry | Rises 0.3s, holds until consumed | Bell strike (resonant) |
-| `BREVE` | Cold blue flash | Letters strip off right side of each enemy word | Near-instant, left-to-right sweep across HUD words | Rapid staccato clip |
+| `FULMEN` | Triforce gold `#F0C040` + white flash | Arc chains from player → 3 nearest enemies | Near-instant outward chains | Sharp crack + chain buzz |
+| `GELU` | Ice blue `#7DD4F0` + frost-white | Expanding ring from player; enemy words frost over | Radially outward 0.5s; words + enemy geometry get ice-blue tint, fades with speed during 2s ramp-back | High crystal ping, reverb tail |
+| `ARMA` | Hylian parchment `#E8D9B8` + Sheikah edge | Hemisphere dome over player; shatters on hit absorbed or 15s expiry | Rises 0.3s, holds until consumed | Bell strike (resonant) |
+| `BREVE` | Sheikah blue `#00D4FF` flash | Letters strip off right side of each enemy word | Near-instant, left-to-right sweep across HUD words | Rapid staccato clip |
 
-| Kill projectile | Amber `#F59E0B` → orange `#EA580C` | Sphere (size scales with word length) | Straight line to enemy at 12 u/s; ember trail | Low whoosh → impact crack |
+| Kill projectile | Triforce gold `#F0C040` → Sheikah orange `#FF8C20` | Sphere (size scales with word length) | Straight line to enemy at 12 u/s; ember trail | Low whoosh → impact crack |
 
 **Dynamic lighting rule:** Every spell cast and every kill projectile launch creates a brief (0.5–1s) point light in the effect's primary color. Dark + point lights = spectacle.
 
