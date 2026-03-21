@@ -251,11 +251,10 @@ size: weak enemies are small and sharp; strong enemies are larger and rounder.
 Enemies render as solid geometry with flat shading (no texture maps) — Dieter
 Rams simplicity: shape does the work.
 
-Arena: flat hexagonal floor plane with beveled edges. Background is a deep Hyrule
-night sky (`#0A1628`) — depth comes from the arena edge and warm directional light,
-not from skybox or background geometry. The floor reads as ancient mossy Sheikah
-stone (`#1C2F22`). Atmospheric depth = Three.js `FogExp2` that thickens toward the
-arena edge, making enemies at the boundary feel distant and menacing.
+Arena: flat hexagonal floor plane with beveled edges. Background is a bright Hyrule
+sky (`#6BB5D4`) — flooded with warm golden sunlight like standing in Hyrule Field.
+The floor is lush grass (`#5A9B3A`). Atmospheric depth = Three.js `FogExp2` using
+sky-haze color (`#8DCCE8`) so enemies at the boundary fade toward sky, not darkness.
 
 Spell effects are the visual stars — enemies and environment should be
 relatively restrained so spells POP.
@@ -410,22 +409,22 @@ The color journey follows combat intensity. At low intensity the world is serene
 
 | Role | Hex | Usage |
 |------|-----|-------|
-| **Background** | `#0A1628` | Canvas, deep Hyrule night sky |
-| **Arena surface** | `#1C2F22` | Floor plane — ancient mossy Sheikah stone |
+| **Background** | `#6BB5D4` | Canvas, bright Hyrule sky blue |
+| **Arena surface** | `#5A9B3A` | Floor plane — lush Hyrule Field grass |
 | **Sheikah blue** | `#00D4FF` | Enemy outlines at low intensity, BREVE spell, player ring, health bar |
 | **Ice blue** | `#7DD4F0` | GELU spell effects — Zora/Vah Medoh ice |
 | **Sheikah orange** | `#FF8C20` | Mid-intensity glow, projectile outer glow — Sheikah slate activation |
 | **Triforce gold** | `#F0C040` | FULMEN lightning, score text, projectile core — high-intensity accents |
 | **Calamity** | `#FF3A00` | Late-intensity bursts, health-low warning — Calamity Ganon malice |
 | **Crimson** | `#C01800` | Nexus Phase 2 color, enemy attack flash — deep danger |
-| **Hylian parchment** | `#E8D9B8` | ARMA shield, HUD text, near-peak effects — aged stone and wood |
+| **Hylian parchment** | `#E8D9B8` | ARMA shield, near-peak effects — aged stone and wood |
 | **Peak white** | `#FFFFFF` | Bloom core at maximum intensity |
-| **HUD text** | `#C8B89C` | Typed word, spellbook labels — warm Hylian stone tone |
-| **HUD dim** | `#3A5848` | Inactive spells, wave counter, secondary info — muted forest green |
+| **HUD text** | `#1A2C0E` | Typed word, spellbook labels — dark Hylian ink, readable on bright sky |
+| **HUD dim** | `#2A4818` | Inactive spells, wave counter, secondary info — muted dark forest |
 | **Health full** | `#00D4FF` | Health bar fill — Sheikah blue (alive and powered) |
 | **Health low** | `#FF3A00` | Health bar below 25% — Calamity orange-red (danger) |
 
-**Contrast principle:** Spell effects should be warm (gold/orange) or vivid cool (Sheikah cyan/ice); environment should be dark and natural (night sky, mossy stone). This makes spells visually dominant without any special render treatment.
+**Contrast principle:** Spell effects are vivid (cyan, gold, orange) and bloom against the bright sky. HUD uses dark Hylian ink against the bright background. Environment is bright and natural (Hyrule sky, field grass).
 
 **Implementation:** Colors live as TypeScript constants in `src/constants/colors.ts`.
 Three.js materials reference these constants — no magic hex strings in component code.

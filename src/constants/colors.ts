@@ -1,7 +1,7 @@
 /** CSS hex strings — use in DOM / CSS custom properties */
 export const COLORS = {
-  BACKGROUND:       '#0A1628',
-  ARENA_SURFACE:    '#1C2F22',
+  BACKGROUND:       '#6BB5D4',
+  ARENA_SURFACE:    '#5A9B3A',
   COLD_BLUE:        '#00D4FF',  // Sheikah blue
   TEAL:             '#7DD4F0',  // Ice blue (GELU / Zora)
   AMBER:            '#FF8C20',  // Sheikah orange
@@ -10,8 +10,8 @@ export const COLORS = {
   CRIMSON:          '#C01800',  // Deep danger / Nexus Phase 2
   SOFT_WHITE:       '#E8D9B8',  // Hylian parchment / ARMA
   PEAK_WHITE:       '#FFFFFF',
-  HUD_TEXT:         '#C8B89C',  // Warm Hylian stone
-  HUD_DIM:          '#3A5848',  // Muted forest green
+  HUD_TEXT:         '#1A2C0E',  // Dark Hylian ink — readable on bright sky
+  HUD_DIM:          '#2A4818',  // Muted forest dark green
   HEALTH_FULL:      '#00D4FF',  // Sheikah blue — alive and powered
   HEALTH_LOW:       '#FF3A00',  // Calamity orange-red — danger
   PROJECTILE_CORE:  '#F0C040',  // Triforce gold
@@ -20,7 +20,7 @@ export const COLORS = {
 
 /** Three.js numeric hex values — use in material color/emissive */
 export const HEX = {
-  BACKGROUND:  0x0A1628,
+  BACKGROUND:  0x6BB5D4,
   COLD_BLUE:   0x00D4FF,  // Sheikah blue
   TEAL:        0x7DD4F0,  // Ice blue (GELU / Zora)
   AMBER:       0xFF8C20,  // Sheikah orange

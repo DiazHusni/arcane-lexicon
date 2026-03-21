@@ -72,8 +72,8 @@ export interface RenderContext {
 export function createRenderContext(canvas: HTMLCanvasElement): RenderContext {
   // ── Scene ────────────────────────────────────────────────────────────────
   const scene = new THREE.Scene()
-  scene.background = new THREE.Color(0x0A1628)
-  scene.fog = new THREE.FogExp2(0x0A1628, FOG_DENSITY)
+  scene.background = new THREE.Color(0x6BB5D4)
+  scene.fog = new THREE.FogExp2(0x8DCCE8, FOG_DENSITY)
 
   // ── Camera ───────────────────────────────────────────────────────────────
   const aspect = window.innerWidth / window.innerHeight
@@ -112,9 +112,9 @@ export function createRenderContext(canvas: HTMLCanvasElement): RenderContext {
   composer.addPass(new OutputPass())
 
   // ── Lighting ─────────────────────────────────────────────────────────────
-  const ambient = new THREE.AmbientLight(0x1A3824, 2)
+  const ambient = new THREE.AmbientLight(0x90C858, 3)
   scene.add(ambient)
-  const dirLight = new THREE.DirectionalLight(0xFFE880, 1.8)
+  const dirLight = new THREE.DirectionalLight(0xFFFAC0, 3)
   dirLight.position.set(5, 12, 8)
   scene.add(dirLight)
 
@@ -198,7 +198,7 @@ function buildArena(scene: THREE.Scene): void {
   // Hexagonal floor — CylinderGeometry with 6 radial segments = regular hexagon
   const floorGeo = new THREE.CylinderGeometry(radius, radius, 0.15, 6, 1)
   const floorMat = new THREE.MeshLambertMaterial({
-    color:             0x1C2F22,
+    color:             0x5A9B3A,
     emissive:          new THREE.Color(0x000000),
     emissiveIntensity: 0,
   })
@@ -209,7 +209,7 @@ function buildArena(scene: THREE.Scene): void {
   // Bevel accent lines on hex floor edges
   const edgesGeo = new THREE.EdgesGeometry(floorGeo)
   const edgesMat = new THREE.LineBasicMaterial({
-    color:       0x2E5C38,
+    color:       0x3A7820,
     transparent: true,
     opacity:     0.7,
   })
@@ -219,10 +219,10 @@ function buildArena(scene: THREE.Scene): void {
 
   // Boundary walls — 6 panels along hex edges
   const wallMat = new THREE.MeshLambertMaterial({
-    color:       0x0E1F14,
+    color:       0x2A6018,
     side:        THREE.DoubleSide,
     transparent: true,
-    opacity:     0.55,
+    opacity:     0.35,
   })
 
   // For a regular hexagon, the 6 edges connect vertices at angles k*60°
