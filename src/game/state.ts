@@ -567,6 +567,13 @@ function tickDying(world: WorldState, dt: number): void {
 }
 
 function tickWaveClear(world: WorldState, dt: number): void {
+  // Finish death animations for enemies that died on the last kill
+  for (const e of world.enemies) {
+    if (!e.alive && e.deathTimer > 0) {
+      tickDeathAnim(e, dt)
+    }
+  }
+
   const next = world.gameData.waveClearTimer - dt
   if (next <= 0) {
     const nextWave = world.gameData.wave + 1
