@@ -185,7 +185,7 @@ something visually striking.
   - Set spell meshes to `material.emissive` (not just `color`) so they bloom
 - Enemy death animations — geometry shatters into faces, then particle burst
 - Environmental atmosphere:
-  - `FogExp2` — density 0.02, thickens toward arena edge
+  - `FogExp2` — density 0.02, field green fog fades distant enemies into the horizon
   - Ambient particle field (50 slow-drifting dim particles, always present)
 - Dynamic lighting — pooled `PointLight` objects (6 in pool), acquired on spell cast
   - Each light color matches spell primary color (see DESIGN.md spell table)

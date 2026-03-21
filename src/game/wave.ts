@@ -46,15 +46,19 @@ export function getSpawnList(wave: number): EnemyType[] {
   return list
 }
 
-/** Random spawn position along the arena boundary edge. */
-export function randomSpawnPosition(arenaHalfSize: number): { x: number; z: number } {
+/** Random spawn position along the screen edge (at world y=0). */
+export function randomSpawnPosition(
+  halfW: number,
+  zNear: number,
+  zFar: number,
+): { x: number; z: number } {
   const edge = Math.floor(Math.random() * 4)
-  const t = (Math.random() * 2 - 1) * (arenaHalfSize - 1)
-  const r = arenaHalfSize - 0.5
+  const tx = (Math.random() * 2 - 1) * halfW
+  const tz = zFar + Math.random() * (zNear - zFar)
   switch (edge) {
-    case 0: return { x: t, z: -r }  // North
-    case 1: return { x: t, z:  r }  // South
-    case 2: return { x: -r, z: t }  // West
-    default: return { x:  r, z: t } // East
+    case 0: return { x: tx,     z: zFar  }  // Far (top of screen)
+    case 1: return { x: tx,     z: zNear }  // Near (bottom of screen)
+    case 2: return { x: -halfW, z: tz    }  // Left
+    default: return { x:  halfW, z: tz   }  // Right
   }
 }

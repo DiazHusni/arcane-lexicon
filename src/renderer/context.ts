@@ -16,6 +16,7 @@ import {
   VIGNETTE_BASE,
   VIGNETTE_FADE_MS,
   FOG_DENSITY,
+  GROUND_RADIUS,
 } from '../constants/game'
 
 // ── Vignette shader ────────────────────────────────────────────────────────
@@ -72,8 +73,8 @@ export interface RenderContext {
 export function createRenderContext(canvas: HTMLCanvasElement): RenderContext {
   // ── Scene ────────────────────────────────────────────────────────────────
   const scene = new THREE.Scene()
-  scene.background = new THREE.Color(0x6BB5D4)
-  scene.fog = new THREE.FogExp2(0x8DCCE8, FOG_DENSITY)
+  scene.background = new THREE.Color(0x3D7028)
+  scene.fog = new THREE.FogExp2(0x4A8530, FOG_DENSITY)
 
   // ── Camera ───────────────────────────────────────────────────────────────
   const aspect = window.innerWidth / window.innerHeight
@@ -192,6 +193,14 @@ export function createRenderContext(canvas: HTMLCanvasElement): RenderContext {
 // ── Arena construction ─────────────────────────────────────────────────────
 
 function buildArena(scene: THREE.Scene): void {
+  // Large outer ground plane — fills the screen to the horizon
+  const outerGeo = new THREE.PlaneGeometry(GROUND_RADIUS * 2, GROUND_RADIUS * 2)
+  const outerMat = new THREE.MeshLambertMaterial({ color: 0x4A8530 })
+  const outerGround = new THREE.Mesh(outerGeo, outerMat)
+  outerGround.rotation.x = -Math.PI / 2
+  outerGround.position.y = -0.08   // just below arena floor (avoids z-fighting)
+  scene.add(outerGround)
+
   const radius = ARENA_HALF_SIZE
   const wallH  = ARENA_WALL_HEIGHT
 

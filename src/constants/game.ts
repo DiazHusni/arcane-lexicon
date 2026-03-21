@@ -84,6 +84,18 @@ export const FULMEN_RADIUS = 999
 /** Enemy spawn Y position (just above floor) */
 export const ENEMY_SPAWN_Y = 0.5
 
+/** Large outer ground plane half-size (fills screen to horizon) */
+export const GROUND_RADIUS = 150
+
+/** Spawn boundary x half-width — matches screen left/right edges at y=0 */
+export const SPAWN_HALF_W = 52
+
+/** Spawn boundary z near edge — matches screen bottom edge at y=0 */
+export const SPAWN_Z_NEAR = 20
+
+/** Spawn boundary z far edge — matches screen top edge at y=0 */
+export const SPAWN_Z_FAR = -36
+
 // ── Phase 3: Visual Spectacle ─────────────────────────────────────────────
 
 /** Number of pre-allocated point lights in the spell light pool */

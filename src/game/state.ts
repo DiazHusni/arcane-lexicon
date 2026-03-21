@@ -47,7 +47,9 @@ import { getSpawnList, randomSpawnPosition } from './wave'
 import {
   PLAYER_HEALTH,
   PROJECTILE_POOL_SIZE,
-  ARENA_HALF_SIZE,
+  SPAWN_HALF_W,
+  SPAWN_Z_NEAR,
+  SPAWN_Z_FAR,
   ARMA_PUSH_RADIUS,
   ARMA_PUSH_FORCE,
   ARMA_STUN_MS,
@@ -168,7 +170,7 @@ function spawnWave(world: WorldState): void {
     const word = assignWord(type, world.gameData.wave, world.waveUsedWords)
     world.waveUsedWords.add(word)
 
-    const pos2d = randomSpawnPosition(ARENA_HALF_SIZE)
+    const pos2d = randomSpawnPosition(SPAWN_HALF_W, SPAWN_Z_NEAR, SPAWN_Z_FAR)
     const pos = new THREE.Vector3(pos2d.x, 0.5, pos2d.z)
 
     const enemy = spawnEnemy(type, word, pos, world.gameData.wave, world.scene, world.labelContainer)

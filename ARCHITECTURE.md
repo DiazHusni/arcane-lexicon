@@ -229,7 +229,8 @@ intensity system (0 in Phase 1/2, linearly increasing in Phase 3).
 
 ```
 scene (owned by renderer/context.ts)
-  ├── arenaGroup       ← floor + boundary walls (created once, never destroyed)
+  ├── groundPlane      ← large 300-unit plane, fills screen to horizon (created once)
+  ├── arenaGroup       ← hex floor + boundary walls (created once, never destroyed)
   ├── playerGroup      ← player mesh (created once)
   ├── enemyPool[]      ← pre-allocated, show/hide on acquire/release
   ├── projectilePool[] ← pre-allocated (10 slots), show/hide on acquire/release
