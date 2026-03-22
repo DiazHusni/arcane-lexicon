@@ -2,10 +2,10 @@ import * as THREE from 'three'
 import type { Enemy } from '../enemy'
 import type { EnemyType } from '../../types/enemy'
 import { intensityFromWave, setEnemyIntensityColor } from '../enemy'
-import { ACUTUS_CONFIG, createAcutusMesh } from './acutus'
-import { SOLIDUS_CONFIG, createSolidusMesh } from './solidus'
-import { PERFECTUS_CONFIG, createPerfectusMesh } from './perfectus'
-import { NEXUS_CONFIG, createNexusMesh } from './nexus'
+import { ACUTUS_CONFIG, createAcutusGroup } from './acutus'
+import { SOLIDUS_CONFIG, createSolidusGroup } from './solidus'
+import { PERFECTUS_CONFIG, createPerfectusGroup } from './perfectus'
+import { NEXUS_CONFIG, createNexusGroup } from './nexus'
 import { DAMAGE_WARNING_MS } from '../../constants/game'
 
 let nextId = 0
@@ -23,10 +23,10 @@ export function spawnEnemy(
   labelContainer: HTMLElement,
 ): Enemy {
   const config = getConfig(type)
-  const mesh = createMesh(type)
-  mesh.position.copy(position)
-  mesh.position.y = 0.5
-  scene.add(mesh)
+  const { group, bodyMat } = createGroup(type)
+  group.position.copy(position)
+  group.position.y = 0.5
+  scene.add(group)
 
   const labelEl = document.createElement('div')
   labelEl.className = 'enemy-label'
@@ -38,7 +38,9 @@ export function spawnEnemy(
   const enemy: Enemy = {
     id: nextId++,
     type,
-    mesh,
+    mesh: group,
+    bodyMat,
+    animTime: 0,
     labelEl,
     word,
     displayWord: word,
@@ -68,8 +70,12 @@ export function spawnEnemy(
 
 export function despawnEnemy(enemy: Enemy, scene: THREE.Scene): void {
   scene.remove(enemy.mesh)
-  enemy.mesh.geometry.dispose()
-  ;(enemy.mesh.material as THREE.Material).dispose()
+  enemy.mesh.traverse((child) => {
+    if (child instanceof THREE.Mesh) {
+      child.geometry.dispose()
+      ;(child.material as THREE.Material).dispose()
+    }
+  })
   if (enemy.labelEl.parentElement) {
     enemy.labelEl.parentElement.removeChild(enemy.labelEl)
   }
@@ -84,11 +90,11 @@ function getConfig(type: EnemyType) {
   }
 }
 
-function createMesh(type: EnemyType): THREE.Mesh {
+function createGroup(type: EnemyType): { group: THREE.Group; bodyMat: THREE.MeshLambertMaterial } {
   switch (type) {
-    case 'acutus':    return createAcutusMesh()
-    case 'solidus':   return createSolidusMesh()
-    case 'perfectus': return createPerfectusMesh()
-    case 'nexus':     return createNexusMesh()
+    case 'acutus':    return createAcutusGroup()
+    case 'solidus':   return createSolidusGroup()
+    case 'perfectus': return createPerfectusGroup()
+    case 'nexus':     return createNexusGroup()
   }
 }

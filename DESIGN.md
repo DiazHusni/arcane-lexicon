@@ -188,20 +188,20 @@ is set by enemy tier. See Enemy Types below.
 
 ### Enemies
 
-**Enemy taxonomy** — Latin names, platonic solid progression. Shape = tier. Bigger and rounder = more dangerous.
+**Enemy taxonomy** — Latin names, spectre wraith tier progression. Size + silhouette = tier. Bigger and more elaborate = more dangerous.
 
 | Name | Shape | Health | Speed | Threat radius | Latin meaning |
 |------|-------|--------|-------|--------------|---------------|
-| **Acutus** | Tetrahedron (4 faces) | Low | Fast | 0.8u | "sharp one" |
-| **Solidus** | Cube (6 faces) | Medium | Medium | 0.95u | "solid one" |
-| **Perfectus** | Octahedron (8 faces) | High | Slow | 1.1u | "perfect one" |
-| **Nexus** | Dodecahedron (12 faces) | Very high | Very slow | 1.5u | "the connected" — boss tier, two-phase fight |
+| **Acutus** | Small wraith — narrow draping cone body, round head, glowing white eyes | Low | Fast | 0.8u | "sharp one" |
+| **Solidus** | Stocky wraith — wider cone, side arm-masses, glowing white eyes | Medium | Medium | 0.95u | "solid one" |
+| **Perfectus** | Tall wraith — tall narrow cone, hood-rim collar, glowing white eyes | High | Slow | 1.1u | "perfect one" |
+| **Nexus** | Boss wraith — massive cone, shoulder masses, glowing red-orange eyes | Very high | Very slow | 1.5u | "the connected" — boss tier, two-phase fight |
 
 All enemies:
 - Flat shading, no textures
-- Slow rotation while alive (each enemy rotates on its own axis)
+- Float toward player facing their movement direction; gentle up/down bob while moving
 - Rendered in Sheikah blue at low game intensity, warming toward Sheikah orange at high intensity
-- Death: geometry shatters outward (explode into faces), then particle burst
+- Death: geometry shatters outward then collapses, particle burst
 - **Assigned word:** each enemy spawns with an English word displayed above it
   - Word floats above the enemy geometry, always faces the camera (billboard)
   - Full opacity on the focused enemy; 40% opacity on all others
@@ -245,11 +245,11 @@ to situational chaos. Phase 1→2 pairs are pre-set (not randomized).
 Think: deep night sky + Sheikah cyan runes + geometric stone-and-moss arena +
 golden Triforce spell fire and ice-blue frost that glow against the dark wilderness.
 
-**3D Style:** Low-poly geometric enemies — platonic solid progression (triangle →
-tetrahedron → cube → octahedron). Each tier is visually distinct by shape AND
-size: weak enemies are small and sharp; strong enemies are larger and rounder.
-Enemies render as solid geometry with flat shading (no texture maps) — Dieter
-Rams simplicity: shape does the work.
+**3D Style:** Low-poly spectre wraiths — cone-body ghosts with round heads, glowing eyes, and
+tier-specific silhouette details (arm masses, hood collar, shoulder masses). Each tier is
+visually distinct by size and extra features: small agile Acutus → massive boss Nexus.
+Flat shading throughout (no texture maps). Enemies face their movement direction and bob
+gently as they glide toward the player.
 
 Arena: flat hexagonal floor plane with beveled edges, surrounded by a large 300-unit
 ground plane that fills the screen to the horizon. Background and fog use a dark field
@@ -448,10 +448,10 @@ src/
     player.ts                Player entity (position, health, mesh)
     enemy.ts                 Enemy base class (seek + separate movement)
     enemies/
-      acutus.ts              Tetrahedron — fast, low health, 3–4 letter words
-      solidus.ts             Cube — balanced, 5–6 letter words
-      perfectus.ts           Octahedron — slow, high health, 6–8 letter words
-      nexus.ts               Dodecahedron — boss, 8–12 letter words
+      acutus.ts              Small wraith — fast, low health, 3–4 letter words
+      solidus.ts             Stocky wraith — balanced, 5–6 letter words
+      perfectus.ts           Tall wraith — slow, high health, 6–8 letter words
+      nexus.ts               Boss wraith — two-phase, 8–12 letter words
       wordAssignment.ts      English word pool + per-spawn word assignment
     projectile.ts            Kill projectile entity (word-match fireball, size = f(wordLength))
   spells/

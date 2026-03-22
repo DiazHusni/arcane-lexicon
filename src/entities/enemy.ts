@@ -6,7 +6,11 @@ import { HEX } from '../constants/colors'
 export interface Enemy {
   id: number
   type: EnemyType
-  mesh: THREE.Mesh
+  mesh: THREE.Group
+  /** Shared body/head material — updated by setEnemyIntensityColor. */
+  bodyMat: THREE.MeshLambertMaterial
+  /** Accumulated move time in ms — drives bob animation. */
+  animTime: number
   labelEl: HTMLElement
   word: string
   displayWord: string       // shown in billboard; may be shortened by BREVE
@@ -42,12 +46,11 @@ export function enemyColorFromIntensity(intensity: number): THREE.Color {
   return cold.lerp(warm, intensity)
 }
 
-/** Apply intensity-driven color to an enemy's material. */
+/** Apply intensity-driven color to an enemy's body material. */
 export function setEnemyIntensityColor(enemy: Enemy, intensity: number): void {
   const col = enemyColorFromIntensity(intensity)
-  const mat = enemy.mesh.material as THREE.MeshLambertMaterial
-  mat.color.copy(col)
-  mat.emissive.copy(col).multiplyScalar(0.15)
+  enemy.bodyMat.color.copy(col)
+  enemy.bodyMat.emissive.copy(col).multiplyScalar(0.15)
 }
 
 // ── Movement ───────────────────────────────────────────────────────────────
@@ -99,8 +102,19 @@ export function move(
 
   enemy.prevPosition.copy(enemy.position)
   enemy.position.add(steering)
+  enemy.animTime += dt
+
+  // Sync visual position with bob
+  const bob = Math.sin(enemy.animTime * 0.003) * 0.07
   enemy.mesh.position.copy(enemy.position)
-  enemy.mesh.rotation.y += 0.01
+  enemy.mesh.position.y += bob
+
+  // Face movement direction
+  const dx = enemy.position.x - enemy.prevPosition.x
+  const dz = enemy.position.z - enemy.prevPosition.z
+  if (dx * dx + dz * dz > 0.000001) {
+    enemy.mesh.rotation.y = Math.atan2(dx, dz)
+  }
 }
 
 // ── Proximity damage ───────────────────────────────────────────────────────
