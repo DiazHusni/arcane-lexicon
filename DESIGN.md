@@ -112,6 +112,11 @@ the battlefield and the enemy words themselves. Each spell:
 
 Spells do not replace the primary kill action (typing enemy words) — they augment it.
 
+**Arena restriction:** Spell effects (FULMEN, GELU, BREVE) only target enemies
+currently inside the hexagonal arena boundary. Enemies outside the hex are immune
+to spell effects until they enter the arena. ARMA is a player buff and is unaffected.
+Typing an enemy's word to kill it works regardless of position.
+
 **TypeScript interfaces** (lives in `src/types/spell.ts`):
 
 ```typescript

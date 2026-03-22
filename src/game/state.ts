@@ -66,6 +66,7 @@ import {
   SHAKE,
   BLOOM_STRENGTH_BASE,
   BLOOM_STRENGTH_MAX,
+  isInsideArenaHex,
 } from '../constants/game'
 import {
   triggerSpellVfx,
@@ -190,17 +191,23 @@ function spawnWave(world: WorldState): void {
     world.enemies.push(enemy)
   }
 
-  // Apply BREVE / GELU if currently active
+  // Apply BREVE / GELU if currently active (only to enemies inside the arena)
   if (world.gameData.breveRemaining > 0) {
     for (const e of world.enemies) {
-      unregisterEnemy(e.id, e.word)
-      applyShorten(e, BREVE_SHORTEN_LETTERS)
-      registerEnemy(e.id, e.displayWord)
+      if (isInsideArenaHex(e.position.x, e.position.z)) {
+        unregisterEnemy(e.id, e.word)
+        applyShorten(e, BREVE_SHORTEN_LETTERS)
+        registerEnemy(e.id, e.displayWord)
+      }
     }
   }
   if (world.gameData.geluRemaining > 0) {
     const mult = geluMultiplierFromRemaining(world.gameData.geluRemaining)
-    for (const e of world.enemies) applySpeedMultiplier(e, mult)
+    for (const e of world.enemies) {
+      if (isInsideArenaHex(e.position.x, e.position.z)) {
+        applySpeedMultiplier(e, mult)
+      }
+    }
   }
 
   // Update bloom strength for new wave intensity
@@ -332,13 +339,17 @@ function handleSpellCast(world: WorldState, spellWord: string): void {
   if (castResult.geluActivated) {
     world.gameData = { ...world.gameData, geluRemaining: GELU_SLOW_TOTAL_MS }
     const mult = geluMultiplierFromRemaining(GELU_SLOW_TOTAL_MS)
-    for (const e of world.enemies) if (e.alive) applySpeedMultiplier(e, mult)
+    for (const e of world.enemies) {
+      if (e.alive && isInsideArenaHex(e.position.x, e.position.z)) {
+        applySpeedMultiplier(e, mult)
+      }
+    }
   }
 
   if (castResult.breveActivated) {
     world.gameData = { ...world.gameData, breveRemaining: BREVE_DURATION_MS }
     for (const e of world.enemies) {
-      if (e.alive) {
+      if (e.alive && isInsideArenaHex(e.position.x, e.position.z)) {
         unregisterEnemy(e.id, e.word)
         applyShorten(e, BREVE_SHORTEN_LETTERS)
         registerEnemy(e.id, e.displayWord)
@@ -349,7 +360,9 @@ function handleSpellCast(world: WorldState, spellWord: string): void {
   if (castResult.aoeRadius !== null) {
     const maxTargets = castResult.aoeMaxTargets ?? Infinity
     const candidates = world.enemies
-      .filter(e => e.alive && !e.markedForDeath && e.position.distanceTo(playerPos) <= castResult.aoeRadius!)
+      .filter(e => e.alive && !e.markedForDeath
+        && e.position.distanceTo(playerPos) <= castResult.aoeRadius!
+        && isInsideArenaHex(e.position.x, e.position.z))
       .sort((a, b) => a.position.distanceTo(playerPos) - b.position.distanceTo(playerPos))
       .slice(0, maxTargets)
     const aoeOrigin = world.getProjectileOrigin?.() ?? playerPos

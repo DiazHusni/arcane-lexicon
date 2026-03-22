@@ -84,6 +84,18 @@ export const FULMEN_RADIUS = 999
 /** Enemy spawn Y position (just above floor) */
 export const ENEMY_SPAWN_Y = 0.5
 
+/**
+ * Returns true if a point (x, z) is inside the hexagonal arena.
+ * Uses the 3-axis constraint for a regular hexagon with circumradius R.
+ */
+export function isInsideArenaHex(x: number, z: number): boolean {
+  const apothem = ARENA_HALF_SIZE * Math.sqrt(3) / 2
+  if (Math.abs(z) > apothem) return false
+  if (Math.abs(x * 0.8660254 + z * 0.5) > apothem) return false  // √3/2 ≈ 0.8660254
+  if (Math.abs(x * 0.8660254 - z * 0.5) > apothem) return false
+  return true
+}
+
 /** Large outer ground plane half-size (fills screen to horizon) */
 export const GROUND_RADIUS = 150
 
