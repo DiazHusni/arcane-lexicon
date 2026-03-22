@@ -413,7 +413,7 @@ The color journey follows combat intensity. At low intensity the world is serene
 |------|-----|-------|
 | **Background** | `#3D7028` | Canvas background, dark Hyrule field horizon |
 | **Arena surface** | `#5A9B3A` | Floor plane — lush Hyrule Field grass |
-| **Sheikah blue** | `#00D4FF` | Enemy outlines at low intensity, BREVE spell, player ring, health bar |
+| **Sheikah blue** | `#00D4FF` | Enemy outlines at low intensity, BREVE spell, player staff orb, health bar |
 | **Ice blue** | `#7DD4F0` | GELU spell effects — Zora/Vah Medoh ice |
 | **Sheikah orange** | `#FF8C20` | Mid-intensity glow, projectile outer glow — Sheikah slate activation |
 | **Triforce gold** | `#F0C040` | FULMEN lightning, score text, projectile core — high-intensity accents |

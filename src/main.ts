@@ -100,7 +100,7 @@ function render(rawDt: number): void {
   // Camera shake + vignette fade
   renderCtx.update(rawDt)
 
-  // Player ring animation
+  // Player mage animation
   tickPlayer(player, rawDt)
 
   // Particle system update
