@@ -14,8 +14,9 @@ export interface HudElements {
   screenDead: HTMLElement
   deadStats: HTMLElement
   screenPause: HTMLElement
-  pauseOptContinue: HTMLElement
+  pauseOptResume: HTMLElement
   pauseOptRestart: HTMLElement
+  pauseOptExit: HTMLElement
 }
 
 export interface HudSyncData {
@@ -48,13 +49,14 @@ export function initHud(): HudElements {
   const deadStats = screenDead.querySelector<HTMLElement>('.dead-stats')
   if (!deadStats) throw new Error('.dead-stats not found')
 
-  const pauseOptContinue = document.getElementById('pause-opt-continue')
+  const pauseOptResume  = document.getElementById('pause-opt-resume')
   const pauseOptRestart = document.getElementById('pause-opt-restart')
-  if (!pauseOptContinue || !pauseOptRestart) throw new Error('Pause option elements not found in DOM')
+  const pauseOptExit    = document.getElementById('pause-opt-exit')
+  if (!pauseOptResume || !pauseOptRestart || !pauseOptExit) throw new Error('Pause option elements not found in DOM')
 
   const spellSlots = Array.from(spellbookEl.querySelectorAll<HTMLElement>('.spell-slot'))
 
-  return { wordEl, healthBarFill, waveEl, spellSlots, screenTitle, screenWave, screenDead, deadStats, screenPause, pauseOptContinue, pauseOptRestart }
+  return { wordEl, healthBarFill, waveEl, spellSlots, screenTitle, screenWave, screenDead, deadStats, screenPause, pauseOptResume, pauseOptRestart, pauseOptExit }
 }
 
 export function syncHud(hud: HudElements, data: HudSyncData): void {
@@ -72,8 +74,9 @@ export function syncHud(hud: HudElements, data: HudSyncData): void {
   hud.screenPause.classList.toggle('hidden', !isPaused)
 
   if (isPaused) {
-    renderPauseOption(hud.pauseOptContinue, 'CONTINUE', wordBuffer)
+    renderPauseOption(hud.pauseOptResume,  'RESUME',  wordBuffer)
     renderPauseOption(hud.pauseOptRestart, 'RESTART', wordBuffer)
+    renderPauseOption(hud.pauseOptExit,    'EXIT',    wordBuffer)
   }
 
   if (isDead) {

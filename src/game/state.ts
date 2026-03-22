@@ -164,6 +164,12 @@ export function restartGame(world: WorldState): void {
   spawnWave(world)
 }
 
+export function exitToTitle(world: WorldState): void {
+  cleanupScene(world)
+  world.pendingKillVfx = []
+  world.gameData = createGameData() // phase: 'TITLE'
+}
+
 function spawnWave(world: WorldState): void {
   if (!world.scene || !world.labelContainer) return
 

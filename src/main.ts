@@ -15,6 +15,7 @@ import {
   startGame,
   startGameDebug,
   restartGame,
+  exitToTitle,
   getEnemyMaps,
 } from './game/state'
 import { createPlayer, tickPlayer, triggerCastAnim } from './entities/player'
@@ -66,7 +67,7 @@ let lastTimestamp = 0
 /** Typed buffer while the pause menu is open. */
 let pauseBuffer = ''
 
-const PAUSE_WORDS = ['continue', 'restart'] as const
+const PAUSE_WORDS = ['resume', 'restart', 'exit'] as const
 
 function handlePauseKey(key: string): void {
   if (key === 'Backspace') {
@@ -77,13 +78,19 @@ function handlePauseKey(key: string): void {
 
   pauseBuffer += key.toLowerCase()
 
-  if (pauseBuffer === 'continue') {
+  if (pauseBuffer === 'resume') {
     world.gameData = { ...world.gameData, phase: 'PLAYING' }
     pauseBuffer = ''
     return
   }
   if (pauseBuffer === 'restart') {
     restartGame(world)
+    pauseBuffer = ''
+    return
+  }
+  if (pauseBuffer === 'exit') {
+    exitToTitle(world)
+    inputState = createInputState()
     pauseBuffer = ''
     return
   }
@@ -114,13 +121,10 @@ window.addEventListener('keydown', (e: KeyboardEvent) => {
     return
   }
 
-  // Esc toggles pause from PLAYING; always resumes from PAUSED
+  // Esc opens the pause menu from PLAYING — typing required to exit pause
   if (e.key === 'Escape') {
     if (gd.phase === 'PLAYING') {
       world.gameData = { ...world.gameData, phase: 'PAUSED' }
-      pauseBuffer = ''
-    } else if (gd.phase === 'PAUSED') {
-      world.gameData = { ...world.gameData, phase: 'PLAYING' }
       pauseBuffer = ''
     }
     return
