@@ -561,10 +561,10 @@ Each spell must be visually distinct at a glance. The visual signature IS the sp
 | Title idle | Particles drift, title pulses gently | Until click/Enter |
 | Game start | Wave 1 spawns, enemies appear | On player input |
 | Combat active | Normal gameplay | Until wave ends or player dies |
-| Word match (kill trigger) | Kill projectile launches; matched enemy marked for death (keeps moving, word dims) | Instant |
+| Word match (kill trigger) | Mage lunges toward target, staff orb brightens; projectile launches from staff tip; matched enemy marked for death | 0.32s cast anim |
 | Projectile in flight | Amber fireball tracks toward moving enemy; ember trail | ~0.15–0.4s travel |
 | Projectile impact | Enemy shatters + particle burst (scaled to word length); score delta | 0.5s death anim |
-| Spell cast (success) | Spell VFX + point light + spellbook slot flash | VFX lasts 0.5–2s |
+| Spell cast (success) | Mage rotates toward nearest enemy and lunges; spell VFX + point light + spellbook slot flash | 0.32s cast anim + VFX 0.5–2s |
 | Spell unlocked | Centered overlay with spell name + description; slot glows | 0.8s overlay |
 | Auto-focus shift | As player types, prefix-matched enemy word shifts to full opacity; others dim | Per keystroke |
 | Fizzle (wrong word) | Red flash on typed word, word clears | 0.15s flash |

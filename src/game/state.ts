@@ -90,6 +90,10 @@ export interface WorldState {
   renderCtx: RenderContext | null
   particles: ParticleSystem | null
   sfx: SfxContext | null
+  /** Injected from main.ts — triggers the mage cast animation toward a world position. */
+  onCast: ((targetPos: THREE.Vector3) => void) | null
+  /** Injected from main.ts — returns the staff orb's current world position (projectile origin). */
+  getProjectileOrigin: (() => THREE.Vector3) | null
 }
 
 export function createWorldState(
@@ -109,6 +113,8 @@ export function createWorldState(
     renderCtx: null,
     particles: null,
     sfx: null,
+    onCast: null,
+    getProjectileOrigin: null,
   }
 }
 
@@ -242,8 +248,9 @@ function handleEnemyKill(world: WorldState, enemyId: number): void {
   unregisterEnemy(enemy.id, enemy.displayWord)
 
   if (world.scene) {
-    const playerPos = new THREE.Vector3(0, 0.5, 0)
-    acquireProjectile(world.projectilePool, playerPos, enemy, enemy.word.length)
+    world.onCast?.(enemy.position)
+    const origin = world.getProjectileOrigin?.() ?? new THREE.Vector3(0, 0.5, 0)
+    acquireProjectile(world.projectilePool, origin, enemy, enemy.word.length)
     if (world.sfx) playLaunch(world.sfx)
   }
 }
@@ -294,6 +301,15 @@ function handleSpellCast(world: WorldState, spellWord: string): void {
   if (world.particles) triggerSpellVfx(spellWord, playerPos, world.particles)
   if (world.sfx) playSpell(world.sfx, spellWord)
 
+  // Cast animation — face the nearest alive enemy (or forward if arena is empty)
+  const castTarget = world.enemies
+    .filter(e => e.alive && !e.markedForDeath)
+    .reduce<Enemy | null>(
+      (best, e) => !best || e.position.lengthSq() < best.position.lengthSq() ? e : best,
+      null,
+    )
+  world.onCast?.(castTarget?.position ?? new THREE.Vector3(0, 0.5, -5))
+
   // FULMEN shake
   if (spellWord === 'fulmen' && world.renderCtx) {
     world.renderCtx.triggerShake(SHAKE.FULMEN, SHAKE.FULMEN_MS)
@@ -330,11 +346,12 @@ function handleSpellCast(world: WorldState, spellWord: string): void {
       .filter(e => e.alive && !e.markedForDeath && e.position.distanceTo(playerPos) <= castResult.aoeRadius!)
       .sort((a, b) => a.position.distanceTo(playerPos) - b.position.distanceTo(playerPos))
       .slice(0, maxTargets)
+    const aoeOrigin = world.getProjectileOrigin?.() ?? playerPos
     for (const e of candidates) {
       markForDeath(e)
       unregisterEnemy(e.id, e.displayWord)
       if (world.scene) {
-        acquireProjectile(world.projectilePool, playerPos, e, e.word.length)
+        acquireProjectile(world.projectilePool, aoeOrigin.clone(), e, e.word.length)
       }
     }
   }

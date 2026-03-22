@@ -17,7 +17,7 @@ import {
   restartGame,
   getEnemyMaps,
 } from './game/state'
-import { createPlayer, tickPlayer } from './entities/player'
+import { createPlayer, tickPlayer, triggerCastAnim } from './entities/player'
 import { ParticleSystem } from './renderer/particles'
 import { initLightPool, tickLightPool, spawnKillVfx } from './renderer/vfx'
 import { initSfx, startAmbient } from './renderer/sfx'
@@ -52,9 +52,11 @@ let inputState = createInputState()
 const world = createWorldState(renderCtx.scene, labelContainer)
 
 // Inject Phase 3 systems into world
-world.renderCtx = renderCtx
-world.particles = particles
-world.sfx       = sfxCtx
+world.renderCtx          = renderCtx
+world.particles          = particles
+world.sfx                = sfxCtx
+world.onCast             = (targetPos) => triggerCastAnim(player, targetPos)
+world.getProjectileOrigin = () => player.staffWorldPos.clone()
 
 let accumulator   = 0
 let lastTimestamp = 0
