@@ -256,6 +256,52 @@ html, body {
   50%       { opacity: 1.0; }
 }
 
+/* ── Pause menu ─────────────────────────────────────────────────────────── */
+
+#screen-pause {
+  background: rgba(26, 44, 14, 0.82);
+  backdrop-filter: blur(3px);
+  gap: 20px;
+}
+
+.pause-title {
+  color: var(--color-teal);
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: 0.45em;
+  text-shadow: 0 0 18px rgba(0, 212, 255, 0.5);
+}
+
+.pause-options {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin-top: 4px;
+}
+
+.pause-option {
+  color: var(--color-hud-dim);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  transition: color 0.1s;
+}
+
+/* Typed prefix highlight — applied via innerHTML in hud.ts */
+.pause-match {
+  color: var(--color-teal);
+  text-shadow: 0 0 10px rgba(0, 212, 255, 0.7);
+}
+
+.pause-hint {
+  color: var(--color-hud-dim);
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  opacity: 0.55;
+  margin-top: 6px;
+}
+
 /* ── Kill VFX ───────────────────────────────────────────────────────────── */
 
 .kill-score {

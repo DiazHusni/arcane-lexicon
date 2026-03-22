@@ -61,6 +61,39 @@ world.getProjectileOrigin = () => player.staffWorldPos.clone()
 let accumulator   = 0
 let lastTimestamp = 0
 
+// ── Pause state ────────────────────────────────────────────────────────────
+
+/** Typed buffer while the pause menu is open. */
+let pauseBuffer = ''
+
+const PAUSE_WORDS = ['continue', 'restart'] as const
+
+function handlePauseKey(key: string): void {
+  if (key === 'Backspace') {
+    pauseBuffer = pauseBuffer.slice(0, -1)
+    return
+  }
+  if (!key.match(/^[A-Z]$/i)) return
+
+  pauseBuffer += key.toLowerCase()
+
+  if (pauseBuffer === 'continue') {
+    world.gameData = { ...world.gameData, phase: 'PLAYING' }
+    pauseBuffer = ''
+    return
+  }
+  if (pauseBuffer === 'restart') {
+    restartGame(world)
+    pauseBuffer = ''
+    return
+  }
+
+  // Dead-end: no pause option starts with this prefix
+  if (!PAUSE_WORDS.some(w => w.startsWith(pauseBuffer))) {
+    pauseBuffer = ''
+  }
+}
+
 // ── Input ─────────────────────────────────────────────────────────────────
 
 window.addEventListener('keydown', (e: KeyboardEvent) => {
@@ -78,6 +111,23 @@ window.addEventListener('keydown', (e: KeyboardEvent) => {
 
   if (gd.phase === 'DEAD') {
     if (e.key === 'Enter' || e.key === ' ') restartGame(world)
+    return
+  }
+
+  // Esc toggles pause from PLAYING; always resumes from PAUSED
+  if (e.key === 'Escape') {
+    if (gd.phase === 'PLAYING') {
+      world.gameData = { ...world.gameData, phase: 'PAUSED' }
+      pauseBuffer = ''
+    } else if (gd.phase === 'PAUSED') {
+      world.gameData = { ...world.gameData, phase: 'PLAYING' }
+      pauseBuffer = ''
+    }
+    return
+  }
+
+  if (gd.phase === 'PAUSED') {
+    handlePauseKey(e.key)
     return
   }
 
@@ -115,10 +165,11 @@ function render(rawDt: number): void {
   renderCtx.composer.render()
 
   const gd     = world.gameData
-  const buffer = getBufferString(inputState)
+  const isPaused = gd.phase === 'PAUSED'
+  const buffer = isPaused ? pauseBuffer : getBufferString(inputState)
 
   const { words: enemyWords, positions: enemyPositions } = getEnemyMaps(world)
-  const focusedId = findAutoFocusEnemy(buffer, enemyWords, 0, 0, enemyPositions)
+  const focusedId = isPaused ? null : findAutoFocusEnemy(buffer, enemyWords, 0, 0, enemyPositions)
 
   // Consume pending kill VFX events (project 3D position → screen coords)
   for (const vfx of world.pendingKillVfx) {
@@ -146,8 +197,11 @@ function frame(timestamp: number): void {
   const rawDt = lastTimestamp === 0 ? 0 : timestamp - lastTimestamp
   lastTimestamp = timestamp
 
-  const result = processTick(accumulator, rawDt, update, FIXED_STEP)
-  accumulator = result.accumulator
+  // Freeze game logic while paused; accumulator stays put so no tick burst on resume
+  if (world.gameData.phase !== 'PAUSED') {
+    const result = processTick(accumulator, rawDt, update, FIXED_STEP)
+    accumulator = result.accumulator
+  }
 
   render(rawDt)
   requestAnimationFrame(frame)

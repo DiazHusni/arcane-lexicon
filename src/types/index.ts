@@ -1,6 +1,6 @@
 import type { SpellState } from './spell'
 
-export type GamePhase = 'TITLE' | 'PLAYING' | 'DYING' | 'DEAD' | 'WAVE_CLEAR'
+export type GamePhase = 'TITLE' | 'PLAYING' | 'PAUSED' | 'DYING' | 'DEAD' | 'WAVE_CLEAR'
 
 export interface GameData {
   phase: GamePhase

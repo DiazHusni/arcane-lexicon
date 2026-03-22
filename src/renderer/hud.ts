@@ -13,6 +13,9 @@ export interface HudElements {
   screenWave: HTMLElement
   screenDead: HTMLElement
   deadStats: HTMLElement
+  screenPause: HTMLElement
+  pauseOptContinue: HTMLElement
+  pauseOptRestart: HTMLElement
 }
 
 export interface HudSyncData {
@@ -33,8 +36,9 @@ export function initHud(): HudElements {
   const screenTitle = document.getElementById('screen-title')
   const screenWave = document.getElementById('screen-wave')
   const screenDead = document.getElementById('screen-dead')
+  const screenPause = document.getElementById('screen-pause')
 
-  if (!wordEl || !healthEl || !waveEl || !spellbookEl || !screenTitle || !screenWave || !screenDead) {
+  if (!wordEl || !healthEl || !waveEl || !spellbookEl || !screenTitle || !screenWave || !screenDead || !screenPause) {
     throw new Error('HUD elements not found in DOM')
   }
 
@@ -44,9 +48,13 @@ export function initHud(): HudElements {
   const deadStats = screenDead.querySelector<HTMLElement>('.dead-stats')
   if (!deadStats) throw new Error('.dead-stats not found')
 
+  const pauseOptContinue = document.getElementById('pause-opt-continue')
+  const pauseOptRestart = document.getElementById('pause-opt-restart')
+  if (!pauseOptContinue || !pauseOptRestart) throw new Error('Pause option elements not found in DOM')
+
   const spellSlots = Array.from(spellbookEl.querySelectorAll<HTMLElement>('.spell-slot'))
 
-  return { wordEl, healthBarFill, waveEl, spellSlots, screenTitle, screenWave, screenDead, deadStats }
+  return { wordEl, healthBarFill, waveEl, spellSlots, screenTitle, screenWave, screenDead, deadStats, screenPause, pauseOptContinue, pauseOptRestart }
 }
 
 export function syncHud(hud: HudElements, data: HudSyncData): void {
@@ -56,10 +64,17 @@ export function syncHud(hud: HudElements, data: HudSyncData): void {
   const isTitle = gameData.phase === 'TITLE'
   const isDead = gameData.phase === 'DEAD'
   const isWaveClear = gameData.phase === 'WAVE_CLEAR'
+  const isPaused = gameData.phase === 'PAUSED'
 
   hud.screenTitle.classList.toggle('hidden', !isTitle)
   hud.screenDead.classList.toggle('hidden', !isDead)
   hud.screenWave.classList.toggle('hidden', !isWaveClear)
+  hud.screenPause.classList.toggle('hidden', !isPaused)
+
+  if (isPaused) {
+    renderPauseOption(hud.pauseOptContinue, 'CONTINUE', wordBuffer)
+    renderPauseOption(hud.pauseOptRestart, 'RESTART', wordBuffer)
+  }
 
   if (isDead) {
     hud.deadStats.textContent = `wave ${gameData.wave}  ·  score ${gameData.score}  ·  kills ${gameData.kills}`
@@ -114,6 +129,20 @@ export function syncHud(hud: HudElements, data: HudSyncData): void {
       const inWarning = enemy.damageWarningTimer < DAMAGE_WARNING_MS && enemy.damageCooldown === 0
       enemy.labelEl.style.color = inWarning ? COLORS.CRIMSON : ''
     }
+  }
+}
+
+/**
+ * Highlight the matching prefix of a pause menu option in Sheikah blue.
+ * Uses innerHTML — safe because `word` is a hardcoded constant and buffer
+ * is validated to A-Z only before being passed here.
+ */
+function renderPauseOption(el: HTMLElement, word: string, buffer: string): void {
+  const prefix = buffer.toUpperCase()
+  if (prefix.length > 0 && word.startsWith(prefix)) {
+    el.innerHTML = `<span class="pause-match">${word.slice(0, prefix.length)}</span>${word.slice(prefix.length)}`
+  } else {
+    el.textContent = word
   }
 }
 

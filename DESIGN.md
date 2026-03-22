@@ -578,6 +578,7 @@ Each spell must be visually distinct at a glance. The visual signature IS the sp
 | Wave clear | "Wave N+1" overlay fades in/out | 1.5s |
 | Player death | Visual drain to wireframe over 2s, then death UI | 2s + UI fade |
 | Restart | Instant reset — title screen or wave 1 | On Enter/click |
+| Paused | Semi-transparent dark overlay; CONTINUE and RESTART options shown; player types word to choose; Esc always resumes | Until CONTINUE typed or Esc pressed |
 | Tab hidden | Freeze frame + "Paused" centered text | Until tab returns |
 | WebGL unsupported | Styled fallback on black: instructions to use Chrome/Firefox | Persistent |
 
