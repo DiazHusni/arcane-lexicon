@@ -306,6 +306,9 @@ function handleSpellCast(world: WorldState, spellWord: string): void {
   const def = getSpellDefinition(spellWord)
   if (!def) return
 
+  // Block ARMA re-cast while shield is still active
+  if (spellWord === 'arma' && world.gameData.playerShieldActive) return
+
   const castResult = castSpell(world.gameData.spells, spellWord)
   world.gameData = { ...world.gameData, spells: castResult.spells }
 

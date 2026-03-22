@@ -168,8 +168,9 @@ enemy words — none kill enemies directly.
 
 **ARMA cooldown rule:** the 25s cooldown does NOT start when ARMA is cast. It starts when
 the shield expires — either by absorbing a hit (contact trigger), or by the 3s passive expiry.
-While the dome is active, the cooldown timer is frozen. This encourages proactive casting: using
-ARMA early doesn't penalize you by burning the cooldown before the shield is used.
+While the dome is active, the cooldown timer is frozen and ARMA cannot be re-cast. This
+encourages proactive casting: using ARMA early doesn't penalize you by burning the cooldown
+before the shield is used.
 
 **ARMA contact trigger:** when an enemy touches the player while the dome is active —
 (1) contact damage is nullified, (2) all enemies within 6u are pushed radially outward

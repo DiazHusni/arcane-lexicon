@@ -16,10 +16,7 @@ export function isSpellReady(spells: SpellState[], word: string): boolean {
   return s !== undefined && s.unlocked && s.cooldownRemaining === 0
 }
 
-/**
- * Start the cooldown for a spell. For ARMA the cooldown is deferred to shield
- * expiry — callers must NOT call this on ARMA cast.
- */
+/** Start (or restart) the cooldown for a spell. */
 export function startCooldown(spells: SpellState[], word: string): SpellState[] {
   const def = getSpellDefinition(word)
   if (!def) return spells
@@ -77,7 +74,8 @@ export interface CastResult {
 
 /**
  * Cast a spell by name. Returns updated spell states and which effects fired.
- * Cooldown is started immediately UNLESS the spell is ARMA (deferred to shield expiry).
+ * ARMA cooldown is deferred — callers must block re-cast while shield is active
+ * and call startCooldown('arma') on shield expiry.
  */
 export function castSpell(spells: SpellState[], word: string): CastResult {
   const def = getSpellDefinition(word)
