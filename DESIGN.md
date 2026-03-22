@@ -538,7 +538,7 @@ Each spell must be visually distinct at a glance. The visual signature IS the sp
 - Each slot shows: spell word + cooldown indicator + lock state
 - **Locked:** slot renders as `· · · ·` placeholder, 20% opacity (player doesn't see the word yet)
 - **Unlocked, ready:** `#C8C4BC` text, 60% opacity
-- **On cooldown:** `#5A5660` text, 30% opacity, with clock-wipe overlay
+- **On cooldown:** dim text; background fills from bottom to top with the spell's color (20% opacity) as cooldown progresses — 0% fill at cast, 50% fill at halfway, 100% fill when ready
 - **Newly unlocked:** brief glow burst in the spell's primary color + 0.3s entrance animation
 - **Recently cast:** brief highlight flash in the spell's primary color
 

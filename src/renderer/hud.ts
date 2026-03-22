@@ -3,6 +3,7 @@ import type { GameData } from '../types/index'
 import type { Enemy } from '../entities/enemy'
 import { COLORS, SPELL_COLORS } from '../constants/colors'
 import { DAMAGE_WARNING_MS } from '../constants/game'
+import { getSpellDefinition } from '../spells/definitions'
 
 export interface HudElements {
   wordEl: HTMLElement
@@ -110,16 +111,24 @@ export function syncHud(hud: HudElements, data: HudSyncData): void {
       slot.className = 'spell-slot locked'
       slot.style.color = ''
       slot.style.borderColor = ''
+      slot.style.background = ''
     } else if (spell.cooldownRemaining > 0) {
+      const def = getSpellDefinition(spell.word)
+      const progress = 1 - spell.cooldownRemaining / (def?.cooldownMs ?? 1)
+      const progressPct = Math.round(progress * 100)
+      const spellColor = SPELL_COLORS[spell.word] ?? COLORS.HUD_TEXT
+
       slot.textContent = spell.word.toUpperCase()
       slot.className = 'spell-slot cooldown'
       slot.style.color = COLORS.HUD_DIM
       slot.style.borderColor = ''
+      slot.style.background = `linear-gradient(to top, ${spellColor}33 ${progressPct}%, rgba(10, 22, 16, 0.92) ${progressPct}%)`
     } else {
       slot.textContent = spell.word.toUpperCase()
       slot.className = 'spell-slot ready'
       slot.style.color = SPELL_COLORS[spell.word] ?? COLORS.HUD_TEXT
       slot.style.borderColor = SPELL_COLORS[spell.word] ?? ''
+      slot.style.background = ''
     }
   }
 

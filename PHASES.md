@@ -254,7 +254,7 @@ variety, multiple arenas, and enough content that a session feels substantial.
 - [ ] 12 spells, each with distinct effect and visual
 - [ ] 4 enemy types with meaningfully different behavior
 - [ ] 3 arena environments
-- [ ] Spell cooldown visualized per spell in HUD
+- [x] Spell cooldown visualized per spell in HUD (gradient fill from bottom)
 - [ ] High score saved to localStorage
 - [ ] A 5-minute session has visible variety — no two waves feel identical
 
