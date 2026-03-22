@@ -349,13 +349,13 @@ Enemies approach from all directions. Camera can shake on big spells.
 ### Gameplay Screen
 ```
 ┌────────────────────────────────────────────────┐
-│ Wave 3          ████████░░░  3/4               │  ← [3] TERTIARY: wave + health (top, 50% opacity)
+│                                        Wave 3  │  ← [3] TERTIARY: wave counter (top-right, 50% opacity)
 │                                                │
 │                                                │
 │          ◆            ◆                       │  ← enemies approach (geometric shapes)
 │                                                │
 │               ●                               │  ← player (center-ish)
-│                                                │
+│            ████████░░░                        │  ← health bar (below player, projected from 3D)
 │        ◆                    ◆                 │
 │                                                │
 │              C R U S H _                      │  ← [1] PRIMARY: typed word (bottom center)
@@ -364,7 +364,8 @@ Enemies approach from all directions. Camera can shake on big spells.
 ```
 - Typed word is the primary HUD element — it's what changes most and needs eyes
 - Spellbook bar shows spell names + cooldown state (see HUD Specification below)
-- Health and wave counter are tertiary — important but not changing every second
+- Health bar floats below the mage, anchored to the character's screen position
+- Wave counter is tertiary — important but not changing every second
 
 ### Between-Wave Overlay (brief, 1.5s)
 ```
@@ -541,10 +542,10 @@ Each spell must be visually distinct at a glance. The visual signature IS the sp
 - **Newly unlocked:** brief glow burst in the spell's primary color + 0.3s entrance animation
 - **Recently cast:** brief highlight flash in the spell's primary color
 
-### Health Bar (top right)
-- Thin horizontal bar (4px height, 120px wide)
-- Fill color transitions from teal (#2DD4BF) → hot pink (#EC4899) as health falls
-- At <25%: bar pulses at ~1Hz (breathing warning)
+### Health Bar (below player character)
+- Thin horizontal bar (3px height, 120px wide), centered beneath the mage
+- Position: projected from player's 3D world position to screen coordinates, offset below the character
+- Fill color: Sheikah blue (`#00D4FF`) when health > 25%, Calamity orange-red (`#FF3A00`) when ≤ 25%
 - No number — it's a felt quantity, not a calculated one
 
 ### Wave Counter (top left)

@@ -68,10 +68,9 @@ html, body {
 
 #hud-health {
   position: fixed;
-  top: 22px;
-  left: 22px;
   width: 120px;
   pointer-events: none;
+  transform: translateX(-50%);
 }
 
 .health-label {
@@ -80,7 +79,8 @@ html, body {
   letter-spacing: 0.25em;
   text-transform: uppercase;
   opacity: 0.6;
-  margin-bottom: 7px;
+  margin-bottom: 4px;
+  text-align: center;
 }
 
 .health-bar-bg {

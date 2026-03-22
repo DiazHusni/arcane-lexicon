@@ -6,6 +6,7 @@ import { DAMAGE_WARNING_MS } from '../constants/game'
 
 export interface HudElements {
   wordEl: HTMLElement
+  healthContainer: HTMLElement
   healthBarFill: HTMLElement
   waveEl: HTMLElement
   spellSlots: HTMLElement[]
@@ -56,7 +57,7 @@ export function initHud(): HudElements {
 
   const spellSlots = Array.from(spellbookEl.querySelectorAll<HTMLElement>('.spell-slot'))
 
-  return { wordEl, healthBarFill, waveEl, spellSlots, screenTitle, screenWave, screenDead, deadStats, screenPause, pauseOptResume, pauseOptRestart, pauseOptExit }
+  return { wordEl, healthContainer: healthEl, healthBarFill, waveEl, spellSlots, screenTitle, screenWave, screenDead, deadStats, screenPause, pauseOptResume, pauseOptRestart, pauseOptExit }
 }
 
 export function syncHud(hud: HudElements, data: HudSyncData): void {
@@ -86,7 +87,11 @@ export function syncHud(hud: HudElements, data: HudSyncData): void {
   // Typed word
   hud.wordEl.textContent = wordBuffer.toUpperCase()
 
-  // Health bar
+  // Health bar — positioned below the mage (project player world pos to screen)
+  const playerScreenPos = projectToScreen(new THREE.Vector3(0, 0, 0), camera, canvasWidth, canvasHeight)
+  hud.healthContainer.style.left = `${playerScreenPos.x}px`
+  hud.healthContainer.style.top = `${playerScreenPos.y + 28}px`
+
   const pct = Math.max(0, Math.min(100, (gameData.health / gameData.maxHealth) * 100))
   hud.healthBarFill.style.width = `${pct}%`
   hud.healthBarFill.style.backgroundColor = pct > 25 ? COLORS.HEALTH_FULL : COLORS.HEALTH_LOW
