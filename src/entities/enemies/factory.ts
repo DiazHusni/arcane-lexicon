@@ -1,14 +1,27 @@
 import * as THREE from 'three'
 import type { Enemy } from '../enemy'
 import type { EnemyType } from '../../types/enemy'
+import type { LoadedModel } from '../../types/animation'
 import { intensityFromWave, setEnemyIntensityColor } from '../enemy'
-import { ACUTUS_CONFIG, createAcutusGroup } from './acutus'
-import { SOLIDUS_CONFIG, createSolidusGroup } from './solidus'
-import { PERFECTUS_CONFIG, createPerfectusGroup } from './perfectus'
-import { NEXUS_CONFIG, createNexusGroup } from './nexus'
+import { ACUTUS_CONFIG, createAcutusInstance } from './acutus'
+import { SOLIDUS_CONFIG, createSolidusInstance } from './solidus'
+import { PERFECTUS_CONFIG, createPerfectusInstance } from './perfectus'
+import { NEXUS_CONFIG, createNexusInstance } from './nexus'
 import { DAMAGE_WARNING_MS } from '../../constants/game'
+import { transitionTo } from '../../animation/animationController'
 
 let nextId = 0
+
+/** Stored base models for cloning. Set by initEnemyFactory(). */
+let baseModels: Record<string, LoadedModel> | null = null
+
+/**
+ * Initialize the enemy factory with loaded GLTF models.
+ * Must be called before spawnEnemy().
+ */
+export function initEnemyFactory(models: Record<string, LoadedModel>): void {
+  baseModels = models
+}
 
 export function resetEnemyIds(): void {
   nextId = 0
@@ -22,11 +35,16 @@ export function spawnEnemy(
   scene: THREE.Scene,
   labelContainer: HTMLElement,
 ): Enemy {
+  if (!baseModels) throw new Error('initEnemyFactory() must be called before spawnEnemy()')
+
   const config = getConfig(type)
-  const { group, bodyMat } = createGroup(type)
+  const { group, bodyMat, animController } = createInstance(type)
   group.position.copy(position)
   group.position.y = 0.5
   scene.add(group)
+
+  // Start in 'idle' state (already initialized by createAnimController)
+  // Transition to 'move' will happen when the enemy starts moving
 
   const labelEl = document.createElement('div')
   labelEl.className = 'enemy-label'
@@ -60,6 +78,7 @@ export function spawnEnemy(
     nexusPhase: 1,
     alive: true,
     deathTimer: 0,
+    animController,
   }
 
   // Apply intensity-driven color at spawn
@@ -73,7 +92,11 @@ export function despawnEnemy(enemy: Enemy, scene: THREE.Scene): void {
   enemy.mesh.traverse((child) => {
     if (child instanceof THREE.Mesh) {
       child.geometry.dispose()
-      ;(child.material as THREE.Material).dispose()
+      if (Array.isArray(child.material)) {
+        child.material.forEach(m => m.dispose())
+      } else {
+        ;(child.material as THREE.Material).dispose()
+      }
     }
   })
   if (enemy.labelEl.parentElement) {
@@ -90,11 +113,13 @@ function getConfig(type: EnemyType) {
   }
 }
 
-function createGroup(type: EnemyType): { group: THREE.Group; bodyMat: THREE.MeshLambertMaterial } {
+function createInstance(type: EnemyType) {
+  if (!baseModels) throw new Error('Models not loaded')
+
   switch (type) {
-    case 'acutus':    return createAcutusGroup()
-    case 'solidus':   return createSolidusGroup()
-    case 'perfectus': return createPerfectusGroup()
-    case 'nexus':     return createNexusGroup()
+    case 'acutus':    return createAcutusInstance(baseModels.acutus)
+    case 'solidus':   return createSolidusInstance(baseModels.solidus)
+    case 'perfectus': return createPerfectusInstance(baseModels.perfectus)
+    case 'nexus':     return createNexusInstance(baseModels.nexus)
   }
 }

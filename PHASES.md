@@ -251,6 +251,11 @@ variety, multiple arenas, and enough content that a session feels substantial.
 
 **Deliverables:**
 
+- [x] Character model overhaul — GLTF models generated via Blender Python scripts
+  - [x] Mage: rigged wizard with robe, arms, hat, staff, cape; idle/cast/death animations
+  - [x] Enemies: 4 wraith types with spectral arms, claws, wisps; idle/move/death animations
+  - [x] GLTFLoader pipeline with loading screen
+  - [x] AnimationMixer + state machine for animation transitions
 - [ ] 12 spells, each with distinct effect and visual
 - [ ] 4 enemy types with meaningfully different behavior
 - [ ] 3 arena environments

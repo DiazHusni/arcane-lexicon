@@ -23,192 +23,201 @@ import { ParticleSystem } from './renderer/particles'
 import { initLightPool, tickLightPool, spawnKillVfx } from './renderer/vfx'
 import { initSfx, startAmbient } from './renderer/sfx'
 import { FIXED_STEP } from './constants/game'
+import { loadAllModels } from './loader/modelLoader'
+import { createLoadingScreen } from './loader/loadingScreen'
+import { initEnemyFactory } from './entities/enemies/factory'
 
 // ── Bootstrap ──────────────────────────────────────────────────────────────
 
-const canvas = document.getElementById('game-canvas') as HTMLCanvasElement
-const labelContainer = document.getElementById('enemy-labels') as HTMLElement
-const renderCtx = createRenderContext(canvas)
-const hud = initHud()
+async function init() {
+  // Show loading screen while models load
+  const loadingScreen = createLoadingScreen()
 
-const player = createPlayer(renderCtx.scene)
+  const canvas = document.getElementById('game-canvas') as HTMLCanvasElement
+  const labelContainer = document.getElementById('enemy-labels') as HTMLElement
+  const renderCtx = createRenderContext(canvas)
+  const hud = initHud()
 
-// Particle system — pre-allocated 50K ring buffer, single Points mesh
-const particles = new ParticleSystem(renderCtx.scene)
+  // Load all GLTF character models
+  const models = await loadAllModels((loaded, total) => {
+    loadingScreen.setProgress(loaded / total)
+  })
 
-// Point light pool — 6 pooled PointLights for spell/impact flashes
-initLightPool(renderCtx.scene)
+  // Initialize enemy factory with loaded models
+  initEnemyFactory(models)
 
-// Audio — lazy-initialized on first user gesture (AudioContext policy)
-const sfxCtx = initSfx()
-let audioStarted = false
+  // Create player from loaded mage model
+  const player = createPlayer(renderCtx.scene, models.mage)
 
-function ensureAudioStarted(): void {
-  if (audioStarted) return
-  audioStarted = true
-  sfxCtx.ctx.resume().then(() => startAmbient(sfxCtx))
-}
+  // Fade out loading screen
+  await loadingScreen.fadeOut()
 
-let inputState = createInputState()
-const world = createWorldState(renderCtx.scene, labelContainer)
+  // Particle system — pre-allocated 50K ring buffer, single Points mesh
+  const particles = new ParticleSystem(renderCtx.scene)
 
-// Inject Phase 3 systems into world
-world.renderCtx          = renderCtx
-world.particles          = particles
-world.sfx                = sfxCtx
-world.onCast             = (targetPos) => triggerCastAnim(player, targetPos)
-world.getProjectileOrigin = () => player.staffWorldPos.clone()
+  // Point light pool — 6 pooled PointLights for spell/impact flashes
+  initLightPool(renderCtx.scene)
 
-let accumulator   = 0
-let lastTimestamp = 0
+  // Audio — lazy-initialized on first user gesture (AudioContext policy)
+  const sfxCtx = initSfx()
+  let audioStarted = false
 
-// ── Pause state ────────────────────────────────────────────────────────────
-
-/** Typed buffer while the pause menu is open. */
-let pauseBuffer = ''
-
-const PAUSE_WORDS = ['resume', 'restart', 'exit'] as const
-
-function handlePauseKey(key: string): void {
-  if (key === 'Backspace') {
-    pauseBuffer = pauseBuffer.slice(0, -1)
-    return
-  }
-  if (!key.match(/^[A-Z]$/i)) return
-
-  pauseBuffer += key.toLowerCase()
-
-  if (pauseBuffer === 'resume') {
-    world.gameData = { ...world.gameData, phase: 'PLAYING' }
-    pauseBuffer = ''
-    return
-  }
-  if (pauseBuffer === 'restart') {
-    restartGame(world)
-    pauseBuffer = ''
-    return
-  }
-  if (pauseBuffer === 'exit') {
-    exitToTitle(world)
-    inputState = createInputState()
-    pauseBuffer = ''
-    return
+  function ensureAudioStarted(): void {
+    if (audioStarted) return
+    audioStarted = true
+    sfxCtx.ctx.resume().then(() => startAmbient(sfxCtx))
   }
 
-  // Dead-end: no pause option starts with this prefix
-  if (!PAUSE_WORDS.some(w => w.startsWith(pauseBuffer))) {
-    pauseBuffer = ''
-  }
-}
+  let inputState = createInputState()
+  const world = createWorldState(renderCtx.scene, labelContainer)
 
-// ── Input ─────────────────────────────────────────────────────────────────
+  // Inject Phase 3 systems into world
+  world.renderCtx          = renderCtx
+  world.particles          = particles
+  world.sfx                = sfxCtx
+  world.onCast             = (targetPos) => triggerCastAnim(player, targetPos)
+  world.getProjectileOrigin = () => player.staffWorldPos.clone()
 
-window.addEventListener('keydown', (e: KeyboardEvent) => {
-  if (e.key === 'Backspace') e.preventDefault()
+  let accumulator   = 0
+  let lastTimestamp = 0
 
-  ensureAudioStarted()
+  // ── Pause state ────────────────────────────────────────────────────────
 
-  const gd = world.gameData
+  let pauseBuffer = ''
 
-  if (gd.phase === 'TITLE') {
-    if (e.key === 'Enter' && e.shiftKey) startGameDebug(world)
-    else if (e.key === 'Enter' || e.key === ' ') startGame(world)
-    return
-  }
+  const PAUSE_WORDS = ['resume', 'restart', 'exit'] as const
 
-  if (gd.phase === 'DEAD') {
-    if (e.key === 'Enter' || e.key === ' ') restartGame(world)
-    return
-  }
+  function handlePauseKey(key: string): void {
+    if (key === 'Backspace') {
+      pauseBuffer = pauseBuffer.slice(0, -1)
+      return
+    }
+    if (!key.match(/^[A-Z]$/i)) return
 
-  // Esc opens the pause menu from PLAYING — typing required to exit pause
-  if (e.key === 'Escape') {
-    if (gd.phase === 'PLAYING') {
-      world.gameData = { ...world.gameData, phase: 'PAUSED' }
+    pauseBuffer += key.toLowerCase()
+
+    if (pauseBuffer === 'resume') {
+      world.gameData = { ...world.gameData, phase: 'PLAYING' }
+      pauseBuffer = ''
+      return
+    }
+    if (pauseBuffer === 'restart') {
+      restartGame(world)
+      pauseBuffer = ''
+      return
+    }
+    if (pauseBuffer === 'exit') {
+      exitToTitle(world)
+      inputState = createInputState()
+      pauseBuffer = ''
+      return
+    }
+
+    if (!PAUSE_WORDS.some(w => w.startsWith(pauseBuffer))) {
       pauseBuffer = ''
     }
-    return
   }
 
-  if (gd.phase === 'PAUSED') {
-    handlePauseKey(e.key)
-    return
-  }
+  // ── Input ─────────────────────────────────────────────────────────────
 
-  if (gd.phase !== 'PLAYING') return
+  window.addEventListener('keydown', (e: KeyboardEvent) => {
+    if (e.key === 'Backspace') e.preventDefault()
 
-  const result = handleKeydown(inputState, e.key, gd.spells)
-  inputState = result.newState
-  handleInput(world, result)
-})
+    ensureAudioStarted()
 
-window.addEventListener('click', () => ensureAudioStarted())
+    const gd = world.gameData
 
-// ── Game update (fixed step) ──────────────────────────────────────────────
+    if (gd.phase === 'TITLE') {
+      if (e.key === 'Enter' && e.shiftKey) startGameDebug(world)
+      else if (e.key === 'Enter' || e.key === ' ') startGame(world)
+      return
+    }
 
-function update(dt: number): void {
-  worldUpdate(world, dt)
-}
+    if (gd.phase === 'DEAD') {
+      if (e.key === 'Enter' || e.key === ' ') restartGame(world)
+      return
+    }
 
-// ── Render (variable, per rAF) ────────────────────────────────────────────
+    if (e.key === 'Escape') {
+      if (gd.phase === 'PLAYING') {
+        world.gameData = { ...world.gameData, phase: 'PAUSED' }
+        pauseBuffer = ''
+      }
+      return
+    }
 
-function render(rawDt: number): void {
-  // Camera shake + vignette fade
-  renderCtx.update(rawDt)
+    if (gd.phase === 'PAUSED') {
+      handlePauseKey(e.key)
+      return
+    }
 
-  // Player mage animation
-  tickPlayer(player, rawDt)
+    if (gd.phase !== 'PLAYING') return
 
-  // Particle system update
-  particles.update(rawDt)
-
-  // Point light fade
-  tickLightPool(rawDt)
-
-  // Render frame via EffectComposer (bloom + vignette + output)
-  renderCtx.composer.render()
-
-  const gd     = world.gameData
-  const isPaused = gd.phase === 'PAUSED'
-  const buffer = isPaused ? pauseBuffer : getBufferString(inputState)
-
-  const { words: enemyWords, positions: enemyPositions } = getEnemyMaps(world)
-  const focusedId = isPaused ? null : findAutoFocusEnemy(buffer, enemyWords, 0, 0, enemyPositions)
-
-  // Consume pending kill VFX events (project 3D position → screen coords)
-  for (const vfx of world.pendingKillVfx) {
-    const v  = vfx.worldPos.clone().project(renderCtx.camera)
-    const sx = Math.round(((v.x + 1) / 2) * window.innerWidth)
-    const sy = Math.round(((-v.y + 1) / 2) * window.innerHeight)
-    spawnKillVfx(sx, sy, vfx.points)
-  }
-  world.pendingKillVfx = []
-
-  syncHud(hud, {
-    wordBuffer: buffer,
-    gameData: gd,
-    enemies: world.enemies,
-    camera: renderCtx.camera,
-    canvasWidth: window.innerWidth,
-    canvasHeight: window.innerHeight,
-    focusedEnemyId: focusedId,
+    const result = handleKeydown(inputState, e.key, gd.spells)
+    inputState = result.newState
+    handleInput(world, result)
   })
-}
 
-// ── Game loop (fixed timestep + rAF interpolation) ────────────────────────
+  window.addEventListener('click', () => ensureAudioStarted())
 
-function frame(timestamp: number): void {
-  const rawDt = lastTimestamp === 0 ? 0 : timestamp - lastTimestamp
-  lastTimestamp = timestamp
+  // ── Game update (fixed step) ──────────────────────────────────────────
 
-  // Freeze game logic while paused; accumulator stays put so no tick burst on resume
-  if (world.gameData.phase !== 'PAUSED') {
-    const result = processTick(accumulator, rawDt, update, FIXED_STEP)
-    accumulator = result.accumulator
+  function update(dt: number): void {
+    worldUpdate(world, dt)
   }
 
-  render(rawDt)
+  // ── Render (variable, per rAF) ────────────────────────────────────────
+
+  function render(rawDt: number): void {
+    renderCtx.update(rawDt)
+    tickPlayer(player, rawDt)
+    particles.update(rawDt)
+    tickLightPool(rawDt)
+    renderCtx.composer.render()
+
+    const gd     = world.gameData
+    const isPaused = gd.phase === 'PAUSED'
+    const buffer = isPaused ? pauseBuffer : getBufferString(inputState)
+
+    const { words: enemyWords, positions: enemyPositions } = getEnemyMaps(world)
+    const focusedId = isPaused ? null : findAutoFocusEnemy(buffer, enemyWords, 0, 0, enemyPositions)
+
+    for (const vfx of world.pendingKillVfx) {
+      const v  = vfx.worldPos.clone().project(renderCtx.camera)
+      const sx = Math.round(((v.x + 1) / 2) * window.innerWidth)
+      const sy = Math.round(((-v.y + 1) / 2) * window.innerHeight)
+      spawnKillVfx(sx, sy, vfx.points)
+    }
+    world.pendingKillVfx = []
+
+    syncHud(hud, {
+      wordBuffer: buffer,
+      gameData: gd,
+      enemies: world.enemies,
+      camera: renderCtx.camera,
+      canvasWidth: window.innerWidth,
+      canvasHeight: window.innerHeight,
+      focusedEnemyId: focusedId,
+    })
+  }
+
+  // ── Game loop (fixed timestep + rAF interpolation) ────────────────────
+
+  function frame(timestamp: number): void {
+    const rawDt = lastTimestamp === 0 ? 0 : timestamp - lastTimestamp
+    lastTimestamp = timestamp
+
+    if (world.gameData.phase !== 'PAUSED') {
+      const result = processTick(accumulator, rawDt, update, FIXED_STEP)
+      accumulator = result.accumulator
+    }
+
+    render(rawDt)
+    requestAnimationFrame(frame)
+  }
+
   requestAnimationFrame(frame)
 }
 
-requestAnimationFrame(frame)
+// Start the game
+init()

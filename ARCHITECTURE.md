@@ -231,8 +231,8 @@ intensity system (0 in Phase 1/2, linearly increasing in Phase 3).
 scene (owned by renderer/context.ts)
   ├── groundPlane      ← large 300-unit plane, fills screen to horizon (created once)
   ├── arenaGroup       ← hex floor + boundary walls (created once, never destroyed)
-  ├── playerGroup      ← player mesh (created once)
-  ├── enemyPool[]      ← pre-allocated, show/hide on acquire/release
+  ├── playerModel      ← loaded GLTF mage (SkinnedMesh + Skeleton, AnimationMixer)
+  ├── enemyModels[]    ← cloned GLTF wraiths per spawn (SkeletonUtils.clone)
   ├── projectilePool[] ← pre-allocated (10 slots), show/hide on acquire/release
   │                      size set on acquire from wordLength; ember trail via particle system
   ├── particleSystem   ← ring buffer, Float32Array, single Points mesh
@@ -411,6 +411,77 @@ function onPlayerHit(): void {
   comboTimer = 0
 }
 ```
+
+---
+
+## Model Loading & Animation Pipeline
+
+### Asset Generation (build-time)
+
+Blender Python scripts generate rigged character models exported as `.glb`:
+
+```
+scripts/blender/
+  common.py              ← shared: material creation, bone helpers, export
+  generate_mage.py       ← mage model + armature + idle/cast/death actions
+  generate_enemies.py    ← 4 wraith types + armatures + idle/move/death actions
+
+scripts/generate-models.sh   ← runs Blender in background mode
+  → outputs to public/models/*.glb (mage.glb, acutus.glb, solidus.glb, perfectus.glb, nexus.glb)
+```
+
+### Runtime Loading (`src/loader/`)
+
+```
+[page load]
+    │
+    ▼
+loadingScreen.ts: show loading overlay (dark bg + progress bar)
+    │
+    ▼
+modelLoader.ts: loadAllModels(onProgress)
+  ├── THREE.LoadingManager for aggregate progress
+  ├── GLTFLoader loads each .glb file
+  └── Returns Record<string, LoadedModel>
+       LoadedModel = { scene: THREE.Group, animations: THREE.AnimationClip[] }
+    │
+    ▼
+loadingScreen.fadeOut()
+    │
+    ▼
+[game init with loaded models]
+  ├── createPlayer(scene, models['mage'])
+  └── initEnemyFactory(models)  ← stashes models for per-spawn cloning
+```
+
+Each enemy spawn clones the loaded model via `SkeletonUtils.clone()` —
+shares GPU geometry/material buffers but gets its own skeleton + mixer.
+
+### Animation Controller (`src/animation/animationController.ts`)
+
+Wraps `THREE.AnimationMixer` with a state machine:
+
+```
+AnimController {
+  mixer: THREE.AnimationMixer
+  actions: Record<AnimState, THREE.AnimationAction>
+  currentState: AnimState   // 'idle' | 'walk' | 'cast' | 'death'
+}
+
+createAnimController(model, clips) → AnimController
+transitionTo(controller, state, fadeDuration) → void
+  ├── current action.fadeOut(fadeDuration)
+  ├── next action.reset().fadeIn(fadeDuration).play()
+  └── 'cast'/'death': LoopOnce + clampWhenFinished
+tickAnimController(controller, dtSec) → void
+  └── mixer.update(dtSec)
+```
+
+Integration points:
+- `tickPlayer()` calls `tickAnimController()` instead of manual sin-bob
+- `triggerCastAnim()` calls `transitionTo('cast', 0.08)`
+- `enemy.move()` calls `tickAnimController()`, transitions idle↔move
+- `enemy.tickDeathAnim()` calls `transitionTo('death', 0)` on first tick
 
 ---
 

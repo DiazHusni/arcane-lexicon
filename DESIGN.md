@@ -251,11 +251,21 @@ to situational chaos. Phase 1→2 pairs are pre-set (not randomized).
 Think: deep night sky + Sheikah cyan runes + geometric stone-and-moss arena +
 golden Triforce spell fire and ice-blue frost that glow against the dark wilderness.
 
-**3D Style:** Low-poly spectre wraiths — cone-body ghosts with round heads, glowing eyes, and
-tier-specific silhouette details (arm masses, hood collar, shoulder masses). Each tier is
-visually distinct by size and extra features: small agile Acutus → massive boss Nexus.
-Flat shading throughout (no texture maps). Enemies face their movement direction and bob
-gently as they glide toward the player.
+**3D Style:** Rigged GLTF character models generated via Blender Python scripts and
+exported as `.glb` files. Loaded at runtime with `GLTFLoader` + `AnimationMixer`.
+
+- **Player mage:** Low-poly stylized wizard (~800-1200 faces) with robe, arms, wizard hat,
+  staff with glowing orb, and cape. Skeletal rig with idle (breathing/sway), cast (staff
+  raise + thrust), and death (stagger + collapse) animations. PBR materials with flat
+  shading at runtime.
+- **Enemy wraiths:** Spectral floating creatures (~400-600 faces each) with elongated
+  teardrop bodies, hollow-socket heads with glowing eyes, articulated spectral arms with
+  3-pronged claws, and trailing wisps on individual bones. Four tiers visually distinct by
+  scale, arm length, and special features (Acutus=sharp/small, Solidus=stocky,
+  Perfectus=tall+collar, Nexus=massive+shoulder ridges). Idle (hover/pulse/sway),
+  move (lean+trailing arms), and death (burst+collapse) animations.
+- All materials: PBR from GLTF export, `flatShading: true` set at runtime to maintain
+  stylized look. Enemy body materials recolored at runtime via the intensity system.
 
 Arena: hexagonal floor plane with beveled edges, surrounded by a large 300-unit
 ground plane that fills the screen to the horizon. Background and fog use a dark field
@@ -339,7 +349,7 @@ Enemies approach from all directions. Camera can shake on big spells.
 
 1. **Game name** — working title is "Arcane Lexicon." Better options?
 2. **Spell discovery** — in v1, the player sees their spellbook. In later versions, spells could be hidden/discovered.
-3. **3D character models** — procedural geometry only, or low-poly model assets?
+3. ~~**3D character models**~~ — **Resolved:** GLTF model assets generated via Blender Python scripts. Rigged characters with skeletal animation (idle, cast/move, death). Loaded at runtime with GLTFLoader.
 4. **Music** — procedural synth layers (Web Audio) or curated loops?
 5. **Progression** — is there a meta-progression between runs (roguelite unlock), or is each run self-contained?
 6. ~~**Story language**~~ — **Resolved:** Language split. Spell words are Latin (FULMEN, GELU, ARMA, BREVE). Enemy assigned words are English (STAB, CRUSH, WARDEN, SOVEREIGN). Mage speaks a deeper language than the enemies do.

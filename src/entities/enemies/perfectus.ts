@@ -1,5 +1,7 @@
 import type { EnemyConfig } from '../../types/enemy'
-import { HEX } from '../../constants/colors'
+import type { LoadedModel, AnimController } from '../../types/animation'
+import { cloneModel, findMaterial } from '../../loader/modelLoader'
+import { createAnimController } from '../../animation/animationController'
 import * as THREE from 'three'
 
 export const PERFECTUS_CONFIG: EnemyConfig = {
@@ -11,48 +13,24 @@ export const PERFECTUS_CONFIG: EnemyConfig = {
   geometryRadius: 0.6,
 }
 
-/**
- * Perfectus — tall, elegant wraith.
- * Tall narrow 8-sided cone, round head, wide hood-rim collar, glowing white eyes.
- */
-export function createPerfectusGroup(): { group: THREE.Group; bodyMat: THREE.MeshLambertMaterial } {
-  const bodyMat = new THREE.MeshLambertMaterial({
-    color:       HEX.COLD_BLUE,
-    emissive:    new THREE.Color(HEX.COLD_BLUE).multiplyScalar(0.15),
-    flatShading: true,
-  })
-  const eyeMat = new THREE.MeshLambertMaterial({
-    color:             0xffffff,
-    emissive:          new THREE.Color(0xffffff),
-    emissiveIntensity: 1.0,
-  })
+export function createPerfectusInstance(
+  baseModel: LoadedModel,
+): { group: THREE.Group; bodyMat: THREE.MeshStandardMaterial; animController: AnimController } {
+  const cloned = cloneModel(baseModel)
+  const group = cloned.scene
 
-  const group = new THREE.Group()
+  const sharedMat = findMaterial(group, 'perfectus_body')
+  const bodyMat = sharedMat ? sharedMat.clone() : new THREE.MeshStandardMaterial({ flatShading: true })
 
-  // Tall narrow cone body — elevated slightly to emphasize height
-  const body = new THREE.Mesh(new THREE.ConeGeometry(0.36, 1.3, 8), bodyMat)
-  body.position.y = 0.08
-  group.add(body)
+  if (sharedMat) {
+    group.traverse((child) => {
+      if (child instanceof THREE.Mesh && child.material === sharedMat) {
+        child.material = bodyMat
+      }
+    })
+  }
 
-  // Round head
-  const head = new THREE.Mesh(new THREE.SphereGeometry(0.22, 8, 8), bodyMat)
-  head.position.y = 0.87
-  group.add(head)
+  const animController = createAnimController(group, cloned.animations)
 
-  // Glowing white eyes
-  const eyeGeo = new THREE.SphereGeometry(0.055, 6, 6)
-  const eyeL   = new THREE.Mesh(eyeGeo, eyeMat)
-  eyeL.position.set(-0.10, 0.91, 0.19)
-  group.add(eyeL)
-
-  const eyeR = new THREE.Mesh(eyeGeo, eyeMat)
-  eyeR.position.set(0.10, 0.91, 0.19)
-  group.add(eyeR)
-
-  // Hood-rim collar — wide flat ring at shoulder height, marks this as refined
-  const collar = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.42, 0.05, 8), bodyMat)
-  collar.position.y = 0.62
-  group.add(collar)
-
-  return { group, bodyMat }
+  return { group, bodyMat, animController }
 }

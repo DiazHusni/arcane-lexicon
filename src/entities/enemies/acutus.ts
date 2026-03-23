@@ -1,5 +1,7 @@
 import type { EnemyConfig } from '../../types/enemy'
-import { HEX } from '../../constants/colors'
+import type { LoadedModel, AnimController } from '../../types/animation'
+import { cloneModel, findMaterial } from '../../loader/modelLoader'
+import { createAnimController } from '../../animation/animationController'
 import * as THREE from 'three'
 
 export const ACUTUS_CONFIG: EnemyConfig = {
@@ -12,42 +14,29 @@ export const ACUTUS_CONFIG: EnemyConfig = {
 }
 
 /**
- * Acutus — small, fast wraith.
- * Narrow 7-sided draping cone body, round head, glowing white eyes.
+ * Create an Acutus instance from a loaded model.
+ * Clones the model and creates a unique body material for intensity coloring.
  */
-export function createAcutusGroup(): { group: THREE.Group; bodyMat: THREE.MeshLambertMaterial } {
-  const bodyMat = new THREE.MeshLambertMaterial({
-    color:       HEX.COLD_BLUE,
-    emissive:    new THREE.Color(HEX.COLD_BLUE).multiplyScalar(0.15),
-    flatShading: true,
-  })
-  const eyeMat = new THREE.MeshLambertMaterial({
-    color:             0xffffff,
-    emissive:          new THREE.Color(0xffffff),
-    emissiveIntensity: 1.0,
-  })
+export function createAcutusInstance(
+  baseModel: LoadedModel,
+): { group: THREE.Group; bodyMat: THREE.MeshStandardMaterial; animController: AnimController } {
+  const cloned = cloneModel(baseModel)
+  const group = cloned.scene
 
-  const group = new THREE.Group()
+  // Clone the body material so each enemy can have independent color
+  const sharedMat = findMaterial(group, 'acutus_body')
+  const bodyMat = sharedMat ? sharedMat.clone() : new THREE.MeshStandardMaterial({ flatShading: true })
 
-  // Draping cone body — base near ground, tip pointing up
-  const body = new THREE.Mesh(new THREE.ConeGeometry(0.22, 0.85, 7), bodyMat)
-  body.position.y = -0.05
-  group.add(body)
+  // Apply cloned material to all meshes that had the shared one
+  if (sharedMat) {
+    group.traverse((child) => {
+      if (child instanceof THREE.Mesh && child.material === sharedMat) {
+        child.material = bodyMat
+      }
+    })
+  }
 
-  // Round head above the cone tip
-  const head = new THREE.Mesh(new THREE.SphereGeometry(0.16, 8, 8), bodyMat)
-  head.position.y = 0.52
-  group.add(head)
+  const animController = createAnimController(group, cloned.animations)
 
-  // Glowing white eyes
-  const eyeGeo = new THREE.SphereGeometry(0.04, 6, 6)
-  const eyeL   = new THREE.Mesh(eyeGeo, eyeMat)
-  eyeL.position.set(-0.07, 0.55, 0.13)
-  group.add(eyeL)
-
-  const eyeR = new THREE.Mesh(eyeGeo, eyeMat)
-  eyeR.position.set(0.07, 0.55, 0.13)
-  group.add(eyeR)
-
-  return { group, bodyMat }
+  return { group, bodyMat, animController }
 }

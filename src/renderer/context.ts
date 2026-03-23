@@ -114,9 +114,9 @@ export function createRenderContext(canvas: HTMLCanvasElement): RenderContext {
   composer.addPass(new OutputPass())
 
   // ── Lighting ─────────────────────────────────────────────────────────────
-  const ambient = new THREE.AmbientLight(0x90C858, 3)
+  const ambient = new THREE.AmbientLight(0x90C858, 4)
   scene.add(ambient)
-  const dirLight = new THREE.DirectionalLight(0xFFFAC0, 3)
+  const dirLight = new THREE.DirectionalLight(0xFFFAC0, 4)
   dirLight.position.set(5, 12, 8)
   scene.add(dirLight)
 

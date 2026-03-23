@@ -1,15 +1,17 @@
 import * as THREE from 'three'
 import type { EnemyType } from '../types/enemy'
+import type { AnimController } from '../types/animation'
 import { DAMAGE_WARNING_MS, DAMAGE_COOLDOWN_MS, ENEMY_DEATH_ANIM_MS } from '../constants/game'
 import { HEX } from '../constants/colors'
+import { transitionTo, tickAnimController } from '../animation/animationController'
 
 export interface Enemy {
   id: number
   type: EnemyType
   mesh: THREE.Group
-  /** Shared body/head material — updated by setEnemyIntensityColor. */
-  bodyMat: THREE.MeshLambertMaterial
-  /** Accumulated move time in ms — drives bob animation. */
+  /** Shared body material — updated by setEnemyIntensityColor. */
+  bodyMat: THREE.MeshStandardMaterial
+  /** Accumulated move time in ms — drives animation timing. */
   animTime: number
   labelEl: HTMLElement
   word: string
@@ -30,6 +32,7 @@ export interface Enemy {
   nexusPhase: number        // Nexus only: 1 or 2
   alive: boolean
   deathTimer: number        // > 0 = playing death animation; 0 = fully dead
+  animController: AnimController
 }
 
 // ── Intensity color system ─────────────────────────────────────────────────
@@ -58,6 +61,9 @@ export function setEnemyIntensityColor(enemy: Enemy, intensity: number): void {
 const SEEK_WEIGHT       = 1.0
 const SEPARATION_WEIGHT = 0.8
 
+/** Velocity magnitude threshold for move vs idle animation state. */
+const MOVE_THRESHOLD = 0.001
+
 export function move(
   enemy: Enemy,
   playerPos: THREE.Vector3,
@@ -65,12 +71,19 @@ export function move(
   dt: number,
 ): void {
   if (!enemy.alive) return
+
+  const dtSec = dt / 1000
+
   if (enemy.stunTimer > 0) {
     enemy.stunTimer = Math.max(0, enemy.stunTimer - dt)
+    // Keep ticking animation even while stunned (idle animation)
+    if (enemy.animController.currentState !== 'idle') {
+      transitionTo(enemy.animController, 'idle', 0.15)
+    }
+    tickAnimController(enemy.animController, dtSec)
     return
   }
 
-  const dtSec = dt / 1000
   const effectiveSpeed = enemy.speed * enemy.speedMultiplier
 
   const seekDir = new THREE.Vector3()
@@ -104,10 +117,8 @@ export function move(
   enemy.position.add(steering)
   enemy.animTime += dt
 
-  // Sync visual position with bob
-  const bob = Math.sin(enemy.animTime * 0.003) * 0.07
+  // Sync visual position (no manual bob — handled by animation)
   enemy.mesh.position.copy(enemy.position)
-  enemy.mesh.position.y += bob
 
   // Face movement direction
   const dx = enemy.position.x - enemy.prevPosition.x
@@ -115,6 +126,17 @@ export function move(
   if (dx * dx + dz * dz > 0.000001) {
     enemy.mesh.rotation.y = Math.atan2(dx, dz)
   }
+
+  // Transition between idle and move animation states
+  const isMoving = steering.lengthSq() > MOVE_THRESHOLD * MOVE_THRESHOLD
+  if (isMoving && enemy.animController.currentState === 'idle') {
+    transitionTo(enemy.animController, 'move', 0.15)
+  } else if (!isMoving && enemy.animController.currentState === 'move') {
+    transitionTo(enemy.animController, 'idle', 0.15)
+  }
+
+  // Tick the animation mixer
+  tickAnimController(enemy.animController, dtSec)
 }
 
 // ── Proximity damage ───────────────────────────────────────────────────────
@@ -192,6 +214,9 @@ export function startDeath(enemy: Enemy): void {
   enemy.alive      = false
   enemy.deathTimer = ENEMY_DEATH_ANIM_MS
   if (enemy.labelEl) enemy.labelEl.style.display = 'none'
+
+  // Trigger death animation
+  transitionTo(enemy.animController, 'death', 0)
 }
 
 /**
@@ -202,20 +227,14 @@ export function tickDeathAnim(enemy: Enemy, dt: number): boolean {
   if (enemy.deathTimer <= 0) return true
 
   enemy.deathTimer -= dt
+
+  // Tick the animation mixer during death
+  tickAnimController(enemy.animController, dt / 1000)
+
   if (enemy.deathTimer <= 0) {
     die(enemy)
     return true
   }
-
-  // Shattering effect: expand outward then collapse
-  const lifeRatio = enemy.deathTimer / ENEMY_DEATH_ANIM_MS // 1→0
-  const expand = Math.sin(lifeRatio * Math.PI) * 0.5       // peak mid-animation
-  const scale  = lifeRatio * (1 + expand)
-  enemy.mesh.scale.setScalar(Math.max(0, scale))
-
-  // Spin faster while dying
-  enemy.mesh.rotation.y += dt * 0.008
-  enemy.mesh.rotation.x += dt * 0.005
 
   return false
 }
