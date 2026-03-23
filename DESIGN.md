@@ -257,12 +257,28 @@ visually distinct by size and extra features: small agile Acutus → massive bos
 Flat shading throughout (no texture maps). Enemies face their movement direction and bob
 gently as they glide toward the player.
 
-Arena: flat hexagonal floor plane with beveled edges, surrounded by a large 300-unit
+Arena: hexagonal floor plane with beveled edges, surrounded by a large 300-unit
 ground plane that fills the screen to the horizon. Background and fog use a dark field
-green (`#3D7028`) so the world feels like an open Hyrule meadow. The arena floor is
-lush grass (`#5A9B3A`); the outer field is a slightly darker shade (`#4A8530`).
+green (`#3D7028`) so the world feels like an open Hyrule meadow.
 Atmospheric depth = Three.js `FogExp2` at density 0.02 using the outer field color —
 enemies at the screen edge fade into the distant field.
+
+**Arena floor texture** (procedural, `renderer/textures.ts` → `createArenaTexture()`):
+1024×1024 Canvas2D texture applied to the hex cylinder's top cap. Layers:
+- Base mossy green stone (`#4a7838`) with 5-octave fbm noise for organic grain
+- Flat-top hex tile grid (circumradius 62px ≈ 2 world units) with dark grout lines
+  (`rgba(22,48,10,0.45)`) and subtle per-tile color variation
+- Arcane circle at center: outer ring (34% radius), inner ring (21%), mid ring (27.5%),
+  8 radial spoke lines, 16 rune diamonds, center glyph cross — all in faint
+  glowing green (`rgba(150,210,110,0.16)`) with canvas shadowBlur
+- Hex border glow matching CylinderGeometry UV layout (pointy-top in UV space)
+- Radial vignette darkening at edges
+
+**Outer ground texture** (procedural, `renderer/textures.ts` → `createGroundTexture()`):
+512×512 Canvas2D texture tiled 10×10 across the ground plane. Layers:
+- Base grass green (`#3a6622`) with 4-octave fbm noise for large color patches
+- Directional grass streaks via asymmetric noise (x:0.01, y:0.15 frequency)
+- 400 random grass-blade strokes at low opacity for organic feel
 
 Spell effects are the visual stars — enemies and environment should be
 relatively restrained so spells POP.

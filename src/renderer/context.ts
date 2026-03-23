@@ -18,6 +18,7 @@ import {
   FOG_DENSITY,
   GROUND_RADIUS,
 } from '../constants/game'
+import { createArenaTexture, createGroundTexture } from './textures'
 
 // ── Vignette shader ────────────────────────────────────────────────────────
 
@@ -194,8 +195,9 @@ export function createRenderContext(canvas: HTMLCanvasElement): RenderContext {
 
 function buildArena(scene: THREE.Scene): void {
   // Large outer ground plane — fills the screen to the horizon
+  const groundTex = createGroundTexture()
   const outerGeo = new THREE.PlaneGeometry(GROUND_RADIUS * 2, GROUND_RADIUS * 2)
-  const outerMat = new THREE.MeshLambertMaterial({ color: 0x4A8530 })
+  const outerMat = new THREE.MeshLambertMaterial({ map: groundTex })
   const outerGround = new THREE.Mesh(outerGeo, outerMat)
   outerGround.rotation.x = -Math.PI / 2
   outerGround.position.y = -0.08   // just below arena floor (avoids z-fighting)
@@ -205,13 +207,16 @@ function buildArena(scene: THREE.Scene): void {
   const wallH  = ARENA_WALL_HEIGHT
 
   // Hexagonal floor — CylinderGeometry with 6 radial segments = regular hexagon
+  const arenaTex = createArenaTexture()
   const floorGeo = new THREE.CylinderGeometry(radius, radius, 0.15, 6, 1)
-  const floorMat = new THREE.MeshLambertMaterial({
-    color:             0x5A9B3A,
+  const sideMat = new THREE.MeshLambertMaterial({ color: 0x3a6828 })
+  const topMat  = new THREE.MeshLambertMaterial({
+    map:               arenaTex,
     emissive:          new THREE.Color(0x000000),
     emissiveIntensity: 0,
   })
-  const floor = new THREE.Mesh(floorGeo, floorMat)
+  const botMat = new THREE.MeshLambertMaterial({ color: 0x2a5018 })
+  const floor = new THREE.Mesh(floorGeo, [sideMat, topMat, botMat])
   floor.position.y = -0.075
   scene.add(floor)
 
